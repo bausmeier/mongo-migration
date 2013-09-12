@@ -12,7 +12,12 @@ var connection = mysql.createConnection({
   database: 'bsg'
 });
 
-var query = connection.query('SELECT posted_by.nme, posted_by.username, feed_post.* FROM feed_post LEFT OUTER JOIN employee AS posted_by ON feed_post.posted_by_employee_id = posted_by.id');
+var query = connection.query(
+  'SELECT posted_by.nme, posted_by.username, feed_post.* ' +
+  'FROM feed_post ' +
+  'LEFT OUTER JOIN employee AS posted_by ' +
+  'ON feed_post.posted_by_employee_id = posted_by.id '
+);
 
 query.stream().pipe(transformer);
 transformer.pipe(mongoStream);
