@@ -1,56 +1,23 @@
 var mysql = require('mysql'),
-    mongodb = require('mongodb');
+    transformer = require('./transformer'),
+    streamToMongo = require('stream-to-mongo');
 
-var MongoClient = mongodb.MongoClient;
+var mongoStream = streamToMongo({
+  db: 'mongodb://localhost/bsg',
+  collection: 'feedposts'
+});
 
-var database,
-    connection;
-
-// Migrate feed posts from mysql to mongodb
-var migrate = function() {
-  console.log('Starting migration');
-  var count = 0;
-  var collection = database.collection('feedposts');
-  var query = connection.query('SELECT * FROM feed_post');
-  query
-    .on('error', function(err) {
-      console.error(err);
-    })
-    .on('result', function(row) {
-      // Progress
-      if (++count % 10000 == 0) {
-        console.log(count);
-      }
-      // Insert the row into mongodb
-      collection.insert(row, function(err) {
-        if (err) {
-          console.error(err);
-        }
-      });
-    })
-    .on('end', function() {
-      // Clean up
-      connection.end();
-      database.close();
-      console.log('Finished migrating');
-    });
-};
-
-// Create a connection to mysql
-connection = mysql.createConnection({
+var connection = mysql.createConnection({
   user: 'root',
   database: 'bsg'
 });
 
-// Connect to mongodb
-MongoClient.connect('mongodb://localhost/bsg', function(err, db) {
-    if (err) {
-      // End mysql connection and throw
-      connection.end();
-      throw err;
-    } else {
-      database = db;
-      // Run the migration
-      migrate();
-    }
+var query = connection.query('SELECT posted_by.nme, posted_by.username, feed_post.* FROM feed_post LEFT OUTER JOIN employee AS posted_by ON feed_post.posted_by_employee_id = posted_by.id');
+
+query.stream().pipe(transformer);
+transformer.pipe(mongoStream);
+mongoStream.on('finish', function() {
+  // Clean up
+  mongoStream.db.close();
+  connection.end();
 });
