@@ -1,15 +1,15 @@
 var mysql = require('mysql'),
-    transformer = require('./transformer'),
-    streamToMongo = require('stream-to-mongo');
-
-var mongoStream = streamToMongo({
-  db: 'mongodb://localhost/bsg',
-  collection: 'feedposts'
-});
+    FeedPostMigrator = require('./migrator');
 
 var connection = mysql.createConnection({
   user: 'root',
   database: 'bsg'
+});
+
+var migrator = new FeedPostMigrator();
+migrator.on('finish', function() {
+  migrator.db.close();
+  connection.end();
 });
 
 var query = connection.query(
@@ -19,10 +19,4 @@ var query = connection.query(
   'ON feed_post.posted_by_employee_id = posted_by.id '
 );
 
-query.stream().pipe(transformer);
-transformer.pipe(mongoStream);
-mongoStream.on('finish', function() {
-  // Clean up
-  mongoStream.db.close();
-  connection.end();
-});
+query.stream().pipe(migrator);
