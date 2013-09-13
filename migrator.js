@@ -37,14 +37,25 @@ var convert = function(row) {
   switch (doc.type) {
     case 1:
       break;
+    case 2:
+      if (row.message_parameters) {
+        doc.parameters = {};
+        var values = row.message_parameters.split('|');
+        doc.parameters.halfday = values[0] === 'true';
+        doc.parameters.start = new Date(parseInt(values[1]));
+        if (values[2]) {
+          doc.parameters.end = new Date(parseInt(values[2]));
+        }
+      }
+      break;
     case 11:
       if (row.message_parameters) {
-        var parameters = row.message_parameters.split('|');
         doc.parameters = {};
-        doc.parameters.awarded_by = parameters[0];
-        doc.parameters.amount = parameters[1];
-        doc.parameters.category = parameters[2];
-        doc.parameters.reason = parameters[3];
+        var values = row.message_parameters.split('|');
+        doc.parameters.awarded_by = values[0];
+        doc.parameters.amount = parseInt(values[1]);
+        doc.parameters.category = values[2];
+        doc.parameters.reason = values[3];
       }
       break;
     default:
