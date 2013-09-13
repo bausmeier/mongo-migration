@@ -37,6 +37,16 @@ var convert = function(row) {
   switch (doc.type) {
     case 1:
       break;
+    case 11:
+      if (row.message_parameters) {
+        var parameters = row.message_parameters.split('|');
+        doc.parameters = {};
+        doc.parameters.awarded_by = parameters[0];
+        doc.parameters.amount = parameters[1];
+        doc.parameters.category = parameters[2];
+        doc.parameters.reason = parameters[3];
+      }
+      break;
     default:
       if (row.message_parameters) {
         doc.parameters = row.message_parameters.split('|');
