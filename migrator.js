@@ -16,6 +16,7 @@ var convert = function(row) {
   // Embed the posted by employee
   if (row.posted_by_name || row.posted_by_username) {
     doc.posted_by = {
+      id: row.posted_by_id,
       name: row.posted_by_name,
       username: row.posted_by_username
     }
@@ -23,6 +24,7 @@ var convert = function(row) {
   // Embed the posted for employee
   if (row.posted_for_name || row.posted_for_username) {
     doc.posted_for = {
+      id: row.posted_for_id,
       name: row.posted_for_name,
       username: row.posted_for_username
     }
