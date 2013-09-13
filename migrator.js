@@ -7,12 +7,12 @@ var convert = function(row) {
   var doc = {};
   // Copy fields
   doc.id = row.id;
-  doc.tenant_id = row.tenant_id;
+  doc.tenant = row.tenant_id;
   doc.message = row.message;
-  doc.date_created = row.date_created;
-  doc.date_updated = row.date_updated;
+  doc.created = row.date_created;
+  doc.updated = row.date_updated;
   doc.type = row.post_type;
-  doc.feed_id = row.feed_id;
+  doc.feed = row.feed_id;
   // Embed the posted by employee
   if (row.posted_by_name || row.posted_by_username) {
     doc.posted_by = {
@@ -31,7 +31,7 @@ var convert = function(row) {
   }
   // Set parent if there is one
   if (row.reply_to_feed_post_id) {
-    doc.parent_id = row.reply_to_feed_post_id;
+    doc.parent = row.reply_to_feed_post_id;
   }
   // Handle type specific fields
   switch (doc.type) {
@@ -79,8 +79,8 @@ FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
 
 FeedPostMigrator.prototype._migrate = function(chunk, done) {
   var doc = convert(chunk);
-  if (doc.parent_id) {
-    this.collection.update({id: doc.parent_id}, {$push: {comments: doc}}, function(err) {
+  if (doc.parent) {
+    this.collection.update({id: doc.parent}, {$push: {replies: doc}}, function(err) {
       if (err) throw err;
       done();
     });
