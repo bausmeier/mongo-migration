@@ -35,9 +35,13 @@ var convert = function(row) {
   }
   // Handle type specific fields
   switch (doc.type) {
+    // User comment
     case 1:
       break;
+    // Upcoming leave
     case 2:
+    // Leave updated
+    case 3:
       if (row.message_parameters) {
         doc.parameters = {};
         var values = row.message_parameters.split('|');
@@ -48,6 +52,7 @@ var convert = function(row) {
         }
       }
       break;
+    // Pips awarded
     case 11:
       if (row.message_parameters) {
         doc.parameters = {};
@@ -69,18 +74,20 @@ var convert = function(row) {
 
 util.inherits(FeedPostMigrator, Writable);
 
-function FeedPostMigrator() {
+function FeedPostMigrator(options) {
   if (!(this instanceof FeedPostMigrator)) {
-    return new FeedPostMigrator();
+    return new FeedPostMigrator(options);
   }
+  this.db = options.database || 'mongodb://localhost/test';
+  this.col = options.collection || 'feedposts';
   Writable.call(this, {objectMode: true});
 }
 
 FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
-  if (!this.db) {
-    MongoClient.connect('mongodb://localhost/bsg', function(err, db) {
-        this.db = db;
-        this.collection = db.collection('feedposts');
+  if (!this.database) {
+    MongoClient.connect(this.db, function(err, database) {
+        this.database = database;
+        this.collection = this.database.collection(this.col);
         this._migrate(chunk, done);
     }.bind(this));
   } else {

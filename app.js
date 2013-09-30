@@ -6,9 +6,11 @@ var connection = mysql.createConnection({
   database: 'bsg'
 });
 
-var migrator = new FeedPostMigrator();
+var migrator = new FeedPostMigrator({
+  database: 'mongodb://localhost/bsg'
+});
 migrator.on('finish', function() {
-  migrator.db.close();
+  migrator.database.close();
   connection.end();
 });
 
