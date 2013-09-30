@@ -7,7 +7,8 @@ var connection = mysql.createConnection({
 });
 
 var migrator = new FeedPostMigrator({
-  database: 'mongodb://localhost/bsg'
+  database: 'mongodb://localhost/bsg',
+  collection: 'feed_posts'
 });
 migrator.on('finish', function() {
   migrator.database.close();
