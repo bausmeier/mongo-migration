@@ -43,8 +43,8 @@ var convert = function(row) {
     // Leave updated
     case 3:
       if (row.message_parameters) {
-        doc.parameters = {};
         var values = row.message_parameters.split('|');
+        doc.parameters = {};
         doc.parameters.halfday = values[0] === 'true';
         doc.parameters.start = new Date(parseInt(values[1]));
         if (values[2]) {
@@ -52,11 +52,40 @@ var convert = function(row) {
         }
       }
       break;
+    // Learning and development
+    case 4:
+      break;
+    // Happy birthday
+    case 5:
+      if (row.message_parameters) {
+        var values = row.message_parameters.split('|');
+        doc.parameters = {};
+        doc.parameters.name = values[0];
+        doc.parameters.date = new Date(parseInt(values[1]));
+      }
+      break;
+    // Spirit level updated
+    case 6:
+      if (row.message_parameters) {
+        var values = row.message_parameters.split('|');
+        doc.parameters = {};
+        doc.parameters.level = parseInt(values[0]);
+      }
+      break;
+    // Web form response received
+    case 7:
+      if (row.message_parameters) {
+        var values = row.message_parameters.split('|');
+        doc.parameters = {};
+        doc.parameters.responses = parseInt(values[0]);
+        doc.parameters.link = values[1];
+      }
+      break;
     // Pips awarded
     case 11:
       if (row.message_parameters) {
-        doc.parameters = {};
         var values = row.message_parameters.split('|');
+        doc.parameters = {};
         doc.parameters.awarded_by = values[0];
         doc.parameters.amount = parseInt(values[1]);
         doc.parameters.category = values[2];
