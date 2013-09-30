@@ -46,48 +46,89 @@ var convertParameters = function(type, values) {
   switch (type) {
     // User comment
     case 1:
-      console.log('User comment shouldn\'t have a parameters ' + values);
+      console.error('User comment shouldn\'t have a parameters ' + values);
+      parameters = values;
       break;
     // Upcoming leave
     case 2:
     // Leave updated
     case 3:
       parameters.halfday = values[0] === 'true';
-      parameters.start = new Date(parseInt(values[1]));
+      parameters.start = new Date(parseInt(values[1], 10));
       if (values[2]) {
-        parameters.end = new Date(parseInt(values[2]));
+        parameters.end = new Date(parseInt(values[2], 10));
       }
       break;
     // Learning and development
     case 4:
       // TODO: WTF is this?
+      console.warn('Learning and development post not handled');
+      parameters = values;
       break;
     // Happy birthday
     case 5:
       parameters.name = values[0];
-      parameters.date = new Date(parseInt(values[1]));
+      parameters.date = new Date(parseInt(values[1], 10));
       break;
     // Spirit level updated
     case 6:
-      parameters.level = parseInt(values[0]);
+      parameters.level = parseInt(values[0], 10);
       break;
     // Stage spirit level updated
     case 7:
       // TODO: WTF is this?
+      console.warn('Stage spirit level post not handled');
+      parameters = values;
       break;
     // Web form response received
     case 8:
-      parameters.responses = parseInt(values[0]);
+      parameters.responses = parseInt(values[0], 10);
       parameters.link = values[1];
+      break;
+    // Anniversary
+    case 9:
+      parameters.name = values[0];
+      parameters.date = new Date(parseInt(values[1], 10));
+      parameters.years = parseInt(values[2]);
+      parameters.gender = values[3] ? parseInt(values[3], 10) : 0;
+      break;
+    // Upcoming training
+    case 10:
+      parameters.name = values[0];
+      parameters.date = new Date(parseInt(values[1], 10));
       break;
     // Pips awarded
     case 11:
       parameters.awarded_by = values[0];
-      parameters.amount = parseInt(values[1]);
+      parameters.amount = parseInt(values[1], 10);
       parameters.category = values[2];
       parameters.reason = values[3];
       break;
+    // Added to group
+    case 12:
+    // Group created
+    case 13:
+      // Cater for groups with a link parameter
+      var startIndex = values.length - 2;
+      parameters.name = values[startIndex];
+      parameters.description = values[startIndex + 1];
+      break;
+    // Blog post published
+    case 14:
+      console.error('Blog post published shouldn\'t have a parameters ' + values);
+      parameters = values;
+      break;
+    // Thought shared
+    case 15:
+      console.error('Thought shared published shouldn\'t have a parameters ' + values);
+      parameters = values;
+      break;
+    // Thought updated
+    case 16:
+      parameters.date = new Date(parseInt(values[0], 10));
+      break;
     default:
+      console.error('Feed post type not handled: ' + type);
       parameters = values;
       break;
   }
