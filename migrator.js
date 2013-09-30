@@ -1,7 +1,6 @@
 var Writable = require('stream').Writable,
     util = require('util'),
-    mongodb = require('mongodb'),
-    MongoClient = mongodb.MongoClient;
+    MongoClient = require('mongodb').MongoClient;
 
 var convert = function(row) {
   var doc = {};
