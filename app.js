@@ -1,20 +1,24 @@
 var mysql = require('mysql'),
     FeedPostMigrator = require('./migrator');
 
+// Connect to MySQL
 var connection = mysql.createConnection({
   user: 'root',
   database: 'bsg'
 });
 
+// Create a new migrator
 var migrator = new FeedPostMigrator({
-  database: 'mongodb://localhost/bsg',
-  collection: 'feed_posts'
+  database: 'mongodb://localhost/bsg'
 });
+
+// Close the database connections when the finish event is fired
 migrator.on('finish', function() {
   migrator.database.close();
   connection.end();
 });
 
+// Get all of the feed post info including the employees
 var query = connection.query(
   'SELECT ' +
   ' posted_by.id AS posted_by_id, posted_by.nme AS posted_by_name, posted_by.username AS posted_by_username, ' +
@@ -25,7 +29,7 @@ var query = connection.query(
   ' ON feed_post.posted_by_employee_id = posted_by.id ' +
   'LEFT OUTER JOIN employee AS posted_for ' +
   ' ON feed_post.posted_for_employee_id = posted_for.id '
-  //+ 'LIMIT 1 '
 );
 
+// Pipe the results of the query to the migrator
 query.stream().pipe(migrator);
