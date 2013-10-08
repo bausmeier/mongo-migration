@@ -140,9 +140,10 @@ function FeedPostMigrator(options) {
   if (!(this instanceof FeedPostMigrator)) {
     return new FeedPostMigrator(options);
   }
+  Writable.call(this, {objectMode: true});
+  options = options || {};
   this.db = options.database || 'mongodb://localhost/test';
   this.col = options.collection || 'feedposts';
-  Writable.call(this, {objectMode: true});
 }
 
 FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
