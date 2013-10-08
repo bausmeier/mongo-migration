@@ -31,7 +31,7 @@ describe('FeedPostMigrator', function() {
     var rowToMigrate = aRow();
     // Setup expectations
     var expected = aDocument(); 
-    mock.expects('insert').once().withArgs(sinon.match(expected)).yields(NO_ERROR);
+    mock.expects('insert').once().withMatch(expected).yields(NO_ERROR);
     // Exercise SUT
     migrator.write(rowToMigrate, null, function() {
       // Verify results
@@ -52,7 +52,7 @@ describe('FeedPostMigrator', function() {
         replies: aDocument().withId(2)
       }
     };
-    mock.expects('update').once().withArgs(sinon.match(expectedQuery), sinon.match(expectedSet)).yields(NO_ERROR);
+    mock.expects('update').once().withMatch(expectedQuery, expectedSet).yields(NO_ERROR);
     // Exercise SUT
     migrator.write(rowToMigrate, null, function() {
       // Verify results
