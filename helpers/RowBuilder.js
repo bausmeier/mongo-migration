@@ -21,6 +21,11 @@ RowBuilder.prototype.withId = function(id) {
   return this;
 };
 
+RowBuilder.prototype.withPostType = function(type) {
+  this.post_type = type;
+  return this;
+};
+
 RowBuilder.prototype.withMessage = function(message) {
   this.message = message;
   return this;
@@ -28,6 +33,11 @@ RowBuilder.prototype.withMessage = function(message) {
 
 RowBuilder.prototype.withReplyToFeedPostId = function(id) {
   this.reply_to_feed_post_id = id;
+  return this;
+};
+
+RowBuilder.prototype.withMessageParameters = function(parameters) {
+  this.message_parameters = parameters;
   return this;
 };
 

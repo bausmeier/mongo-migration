@@ -27,4 +27,14 @@ DocumentBuilder.prototype.withMessage = function(message) {
   return this;
 };
 
+DocumentBuilder.prototype.withType = function(type) {
+  this.type = type;
+  return this;
+};
+
+DocumentBuilder.prototype.withParameters = function(parameters) {
+  this.parameters = parameters;
+  return this;
+};
+
 module.exports = DocumentBuilder;
