@@ -2,8 +2,8 @@ var FeedPostMigrator = require('../migrator'),
     sinon = require('sinon'),
     expect = require('chai').expect;
 
-var aDocument = require('../helpers/DocumentBuilder'),
-    aRow = require('../helpers/RowBuilder');
+var aDocument = require('./helpers/DocumentBuilder'),
+    aRow = require('./helpers/RowBuilder');
 
 var NO_ERROR = null;
 
