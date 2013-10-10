@@ -33,6 +33,11 @@ RowBuilder.prototype.withMessageParameters = function(parameters) {
   return this;
 };
 
+RowBuilder.prototype.withPostedForId = function(id) {
+  this.posted_for_id = id;
+  return this;
+};
+
 RowBuilder.prototype.withPostedForName = function(name) {
   this.posted_for_name = name;
   return this;

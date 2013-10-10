@@ -22,30 +22,39 @@ describe('FeedPostMigrator', function() {
     migrator.database = true;
     migrator.collection = {
       insert: function(doc, callback) {
-        callback();
+        throw new Error('Insert should be mocked');
       },
       update: function(query, set, callback) {
-        callback();
+        throw new Error('Update should be mocked');
       }
     };
+  });
+  
+  after(function() {
+    migrator.end();
   });
 
   beforeEach(function() {
     mock = sinon.mock(migrator.collection);
   });
   
+  afterEach(function() {
+    mock.restore();
+  });
+  
   describe('User comment', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var now = moment();
-      var rowToMigrate = aRow().withPostedForName('Clinton Bosch').withPostedForUsername('clinton.bosch').withDateCreated(now.valueOf());
+      var rowToMigrate = aRow().withMessage('Test message').withPostedForId(181).withPostedForName('Clinton Bosch').withPostedForUsername('clinton.bosch').withDateCreated(now.valueOf());
       // Setup expectations
       var expectedPostedFor = {
+        id: 181,
         name: 'Clinton Bosch',
         username: 'clinton.bosch'
       };
-      var expected = aDocument().withPostedFor(expectedPostedFor).withCreated(now.toDate()); 
-      mock.expects('insert').once().withMatch(expected).yields(NO_ERROR);
+      var expected = aDocument().withMessage('Test message').withPostedFor(expectedPostedFor).withCreated(now.toDate()); 
+      mock.expects('insert').once().withMatch(expected).yields();
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
@@ -142,7 +151,7 @@ describe('FeedPostMigrator', function() {
   });
   
   describe('Leave updated', function() {
-    it('should have the correct properties after being migrated', function(done) {
+    it('should be added to parent post with correct parameters', function(done) {
       // Setup fixture
       var parentId = 1;
       var today = moment();
