@@ -4,16 +4,9 @@ function DocumentBuilder() {
   }
   this.id = 1;
   this.tenant = 1;
-  this.message = 'Test';
-  this.type = 1;
-  this.feed = 1;
   this.posted_by = {
     name: 'Brett Ausmeier',
     username: 'brett.ausmeier'
-  };
-  this.posted_for = {
-    name: 'Clinton Bosch',
-    username: 'clinton.bosch'
   };
 };
 
@@ -34,6 +27,16 @@ DocumentBuilder.prototype.withType = function(type) {
 
 DocumentBuilder.prototype.withParameters = function(parameters) {
   this.parameters = parameters;
+  return this;
+};
+
+DocumentBuilder.prototype.withPostedFor = function(posted_for) {
+  this.posted_for = posted_for;
+  return this;
+};
+
+DocumentBuilder.prototype.withCreated = function(created) {
+  this.created = created;
   return this;
 };
 

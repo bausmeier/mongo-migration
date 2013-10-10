@@ -8,8 +8,10 @@ var convert = function(row) {
   doc.id = row.id;
   doc.tenant = row.tenant_id;
   doc.message = row.message;
-  doc.created = row.date_created;
-  doc.updated = row.date_updated;
+  doc.created = new Date(parseInt(row.date_created, 10));
+  if (row.date_updated) {
+    doc.updated = new Date(parseInt(row.date_updated, 10));
+  }
   doc.type = row.post_type;
   doc.feed = row.feed_id;
   // Embed the posted by employee

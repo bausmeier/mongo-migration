@@ -8,7 +8,8 @@
   "devDependencies": {
     "mocha": "~1.13.0",
     "sinon": "git://github.com/bausmeier/Sinon.JS#add-with-match",
-    "chai": "~1.8.0"
+    "chai": "~1.8.0",
+    "moment": "~2.3.1"
   },
   "scripts": {
     "test": "mocha -R spec"

@@ -4,16 +4,8 @@ function RowBuilder() {
   }
   this.id = 1;
   this.tenant_id = 1;
-  this.post_type = 1;
-  this.feed_id = 1;
-  this.message = 'Test';
-  var now = new Date().getTime();
-  this.date_created = now;
-  this.date_updated = now;
   this.posted_by_name = 'Brett Ausmeier';
   this.posted_by_username = 'brett.ausmeier';
-  this.posted_for_name = 'Clinton Bosch';
-  this.posted_for_username = 'clinton.bosch';
 };
 
 RowBuilder.prototype.withId = function(id) {
@@ -38,6 +30,21 @@ RowBuilder.prototype.withReplyToFeedPostId = function(id) {
 
 RowBuilder.prototype.withMessageParameters = function(parameters) {
   this.message_parameters = parameters;
+  return this;
+};
+
+RowBuilder.prototype.withPostedForName = function(name) {
+  this.posted_for_name = name;
+  return this;
+};
+
+RowBuilder.prototype.withPostedForUsername = function(username) {
+  this.posted_for_username = username;
+  return this;
+};
+
+RowBuilder.prototype.withDateCreated = function(date) {
+  this.date_created = date;
   return this;
 };
 
