@@ -163,18 +163,20 @@ FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
 }
 
 FeedPostMigrator.prototype._migrate = function(chunk, done) {
-  var doc = convert(chunk);
-  // If the doc has a parent add it as a reply, otherwise insert it
-  if (doc.parent) {
-    this.collection.update({id: doc.parent}, {$push: {replies: doc}}, function(err) {
-      if (err) throw err;
-      done();
-    });
-  } else {
-    this.collection.insert(doc, function(err) {
-      if (err) throw err;
-      done();
-    });
+  try {
+    var doc = convert(chunk);
+    // If the doc has a parent add it as a reply, otherwise insert it
+    if (doc.parent) {
+      this.collection.update({id: doc.parent}, {$push: {replies: doc}}, function(err) {
+        done(err);
+      });
+    } else {
+      this.collection.insert(doc, function(err) {
+        done(err);
+      });
+    }
+  } catch (err) {
+    done(err);
   }
 }
 
