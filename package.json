@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "mocha": "~1.13.0",
-    "sinon": "git://github.com/bausmeier/Sinon.JS#add-with-match",
+    "sinon": "~1.7.3",
     "chai": "~1.8.0",
     "moment": "~2.3.1"
   },

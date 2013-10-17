@@ -15,31 +15,24 @@ var NO_ERROR = null,
 describe('FeedPostMigrator', function() {
   
   var migrator,
-      mock;
+      collection;
   
   before(function() {
     migrator = new FeedPostMigrator();
     migrator.database = true;
-    migrator.collection = {
-      insert: function(doc, callback) {
-        throw new Error('Insert should be mocked');
-      },
-      update: function(query, set, callback) {
-        throw new Error('Update should be mocked');
-      }
+    migrator.collection = collection = {
+      insert: sinon.stub().yields(NO_ERROR),
+      update: sinon.stub().yields(NO_ERROR)
     };
   });
   
   after(function() {
     migrator.end();
   });
-
-  beforeEach(function() {
-    mock = sinon.mock(migrator.collection);
-  });
   
   afterEach(function() {
-    mock.restore();
+    collection.insert.reset();
+    collection.update.reset();
   });
   
   describe('User comment', function() {
@@ -53,12 +46,12 @@ describe('FeedPostMigrator', function() {
         name: 'Clinton Bosch',
         username: 'clinton.bosch'
       };
-      var expected = aDocument().withMessage('Test message').withPostedFor(expectedPostedFor).withCreated(now.toDate()); 
-      mock.expects('insert').once().withMatch(expected).yields();
+      var expectedDocument = aDocument().withMessage('Test message').withPostedFor(expectedPostedFor).withCreated(now.toDate()); 
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
-        mock.verify();
+        expect(collection.insert.calledOnce).to.equal(true);
+        expect(collection.insert.calledWithMatch(expectedDocument)).to.equal(true);
         done();
       });
     });
@@ -76,11 +69,11 @@ describe('FeedPostMigrator', function() {
           replies: aDocument().withId(2)
         }
       };
-      mock.expects('update').once().withMatch(expectedQueryClause, expectedSetClause).yields(NO_ERROR);
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, null, function(err) {
         // Verify results
-        mock.verify();
+        expect(collection.update.calledOnce).to.equal(true);
+        expect(collection.update.calledWithMatch(expectedQueryClause, expectedSetClause)).to.equal(true);
         done();
       });
     });
@@ -97,11 +90,11 @@ describe('FeedPostMigrator', function() {
         category: 'Delivery Focus'
       };
       var expectedDocument = aDocument().withType(PIPS_AWARDED).withParameters(expectedParameters);
-      mock.expects('insert').once().withMatch(expectedDocument).yields(NO_ERROR);
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
-        mock.verify();
+        expect(collection.insert.calledOnce).to.equal(true);
+        expect(collection.insert.calledWithMatch(expectedDocument)).to.equal(true);
         done();
       });
     });
@@ -117,11 +110,11 @@ describe('FeedPostMigrator', function() {
         reason: 'For testing'
       };
       var expectedDocument = aDocument().withType(PIPS_AWARDED).withParameters(expectedParameters);
-      mock.expects('insert').once().withMatch(expectedDocument).yields(NO_ERROR);
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
-        mock.verify();
+        expect(collection.insert.calledOnce).to.equal(true);
+        expect(collection.insert.calledWithMatch(expectedDocument)).to.equal(true);
         done();
       });
     });
@@ -140,11 +133,11 @@ describe('FeedPostMigrator', function() {
         end: tomorrow.toDate()
       };
       var expectedDocument = aDocument().withType(UPCOMING_LEAVE).withParameters(expectedParameters);
-      mock.expects('insert').once().withMatch(expectedDocument).yields(NO_ERROR);
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
-        mock.verify();
+        expect(collection.insert.calledOnce).to.equal(true);
+        expect(collection.insert.calledWithMatch(expectedDocument)).to.equal(true);
         done();
       });
     });
@@ -169,11 +162,11 @@ describe('FeedPostMigrator', function() {
           replies: aDocument().withId(2).withType(LEAVE_UPDATED).withParameters(expectedParameters)
         }
       };
-      mock.expects('update').once().withMatch(expectedQueryClause, expectedSetClause).yields(NO_ERROR);
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
-        mock.verify();
+        expect(collection.update.calledOnce).to.equal(true);
+        expect(collection.update.calledWithMatch(expectedQueryClause, expectedSetClause)).to.equal(true);
         done();
       });
     });
