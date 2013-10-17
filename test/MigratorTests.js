@@ -1,8 +1,7 @@
 var FeedPostMigrator = require('../migrator'),
     sinon = require('sinon'),
-    moment = require('moment');
-
-var chai = require('chai-for-sinon'),
+    moment = require('moment'),
+    chai = require('chai-for-sinon'),
     expect = chai.expect;
 
 var aDocument = require('./helpers/DocumentBuilder'),
