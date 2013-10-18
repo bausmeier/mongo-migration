@@ -30,8 +30,8 @@ RowBuilder.prototype.withReplyToFeedPostId = function(id) {
   return this;
 };
 
-RowBuilder.prototype.withMessageParameters = function(parameters) {
-  this.row.message_parameters = parameters;
+RowBuilder.prototype.withMessageParameters = function() {
+  this.row.message_parameters = Array.prototype.slice.call(arguments).join('|');
   return this;
 };
 

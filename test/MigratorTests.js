@@ -11,6 +11,7 @@ var NO_ERROR = null,
     USER_COMMENT = 1,
     UPCOMING_LEAVE = 2,
     LEAVE_UPDATED = 3,
+    SPIRIT_LEVEL_UPDATED = 6,
     PIPS_AWARDED = 11;
 
 describe('FeedPostMigrator', function() {
@@ -40,14 +41,22 @@ describe('FeedPostMigrator', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var now = moment();
-      var rowToMigrate = aRow().withMessage('Test message').withPostedForId(181).withPostedForName('Clinton Bosch').withPostedForUsername('clinton.bosch').withDateCreated(now.valueOf()).build();
+      var rowToMigrate = aRow().withMessage('Test message')
+                               .withPostedForId(181)
+                               .withPostedForName('Clinton Bosch')
+                               .withPostedForUsername('clinton.bosch')
+                               .withDateCreated(now.valueOf())
+                               .build();
       // Setup expectations
       var expectedPostedFor = {
         id: 181,
         name: 'Clinton Bosch',
         username: 'clinton.bosch'
       };
-      var expectedDocument = aDocument().withMessage('Test message').withPostedFor(expectedPostedFor).withCreated(now.toDate()).build(); 
+      var expectedDocument = aDocument().withMessage('Test message')
+                                        .withPostedFor(expectedPostedFor)
+                                        .withCreated(now.toDate())
+                                        .build(); 
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
@@ -83,14 +92,18 @@ describe('FeedPostMigrator', function() {
   describe('Pips awarded', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
-      var rowToMigrate = aRow().withPostType(PIPS_AWARDED).withMessageParameters('Brett Ausmeier|100|Delivery Focus').build();
+      var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
+                               .withMessageParameters('Brett Ausmeier', 100, 'Delivery Focus')
+                               .build();
       // Setup expectations
       var expectedParameters = {
         awarded_by: 'Brett Ausmeier',
         amount: 100,
         category: 'Delivery Focus'
       };
-      var expectedDocument = aDocument().withType(PIPS_AWARDED).withParameters(expectedParameters).build();
+      var expectedDocument = aDocument().withType(PIPS_AWARDED)
+                                        .withParameters(expectedParameters)
+                                        .build();
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
@@ -102,7 +115,10 @@ describe('FeedPostMigrator', function() {
     
     it('should have the correct properties after being migrated with a reason', function(done) {
       // Setup fixture
-      var rowToMigrate = aRow().withPostType(PIPS_AWARDED).withMessageParameters('Brett Ausmeier|100|Delivery Focus|For testing').build();
+      var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
+                               .withMessageParameters('Brett Ausmeier', 100, 'Delivery Focus',
+                                                      'For testing')
+                               .build();
       // Setup expectations
       var expectedParameters = {
         awarded_by: 'Brett Ausmeier',
@@ -110,7 +126,9 @@ describe('FeedPostMigrator', function() {
         category: 'Delivery Focus',
         reason: 'For testing'
       };
-      var expectedDocument = aDocument().withType(PIPS_AWARDED).withParameters(expectedParameters).build();
+      var expectedDocument = aDocument().withType(PIPS_AWARDED)
+                                        .withParameters(expectedParameters)
+                                        .build();
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
@@ -126,14 +144,18 @@ describe('FeedPostMigrator', function() {
       // Setup fixture
       var today = moment();
       var tomorrow = moment().add('days', 1);
-      var rowToMigrate = aRow().withPostType(UPCOMING_LEAVE).withMessageParameters('true|' + today.valueOf() + '|' + tomorrow.valueOf()).build();
+      var rowToMigrate = aRow().withPostType(UPCOMING_LEAVE)
+                               .withMessageParameters('true', today.valueOf(), tomorrow.valueOf())
+                               .build();
       // Setup expectations
       var expectedParameters = {
         halfday: true,
         start: today.toDate(),
         end: tomorrow.toDate()
       };
-      var expectedDocument = aDocument().withType(UPCOMING_LEAVE).withParameters(expectedParameters).build();
+      var expectedDocument = aDocument().withType(UPCOMING_LEAVE)
+                                        .withParameters(expectedParameters)
+                                        .build();
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
         // Verify results
@@ -149,7 +171,11 @@ describe('FeedPostMigrator', function() {
       // Setup fixture
       var parentId = 1;
       var today = moment();
-      var rowToMigrate = aRow().withId(2).withPostType(LEAVE_UPDATED).withMessageParameters('false|' + today.valueOf()).withReplyToFeedPostId(parentId).build();
+      var rowToMigrate = aRow().withId(2)
+                               .withPostType(LEAVE_UPDATED)
+                               .withMessageParameters('false', today.valueOf())
+                               .withReplyToFeedPostId(parentId)
+                               .build();
       // Setup expectations
       var expectedQueryClause = {
         id: parentId
@@ -160,7 +186,10 @@ describe('FeedPostMigrator', function() {
       };
       var expectedSetClause = {
         $push: {
-          replies: aDocument().withId(2).withType(LEAVE_UPDATED).withParameters(expectedParameters).build()
+          replies: aDocument().withId(2)
+                              .withType(LEAVE_UPDATED)
+                              .withParameters(expectedParameters)
+                              .build()
         }
       };
       // Exercise SUT
@@ -168,6 +197,30 @@ describe('FeedPostMigrator', function() {
         // Verify results
         expect(collection.update).to.be.calledOnce();
         expect(collection.update).to.be.calledWithMatch(expectedQueryClause, expectedSetClause);
+        done();
+      });
+    });
+  });
+  
+  describe('Spirit level updated', function() {
+    it('should have the correct fields after being migrated', function(done) {
+      // Setup fixture
+      var irrelevantLevel = 1;
+      var rowToMigrate = aRow().withPostType(SPIRIT_LEVEL_UPDATED)
+                               .withMessageParameters(irrelevantLevel)
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        level: irrelevantLevel
+      };
+      var expectedDocument = aDocument().withType(SPIRIT_LEVEL_UPDATED)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify results
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
         done();
       });
     });
