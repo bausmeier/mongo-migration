@@ -11,6 +11,7 @@ var NO_ERROR = null,
     USER_COMMENT = 1,
     UPCOMING_LEAVE = 2,
     LEAVE_UPDATED = 3,
+    HAPPY_BIRTHDAY = 5,
     SPIRIT_LEVEL_UPDATED = 6,
     PIPS_AWARDED = 11;
 
@@ -203,7 +204,7 @@ describe('FeedPostMigrator', function() {
   });
   
   describe('Spirit level updated', function() {
-    it('should have the correct fields after being migrated', function(done) {
+    it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var irrelevantLevel = 1;
       var rowToMigrate = aRow().withPostType(SPIRIT_LEVEL_UPDATED)
@@ -214,6 +215,31 @@ describe('FeedPostMigrator', function() {
         level: irrelevantLevel
       };
       var expectedDocument = aDocument().withType(SPIRIT_LEVEL_UPDATED)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify results
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+  
+  describe('Happy birthday', function() {
+    it('should have the correct properties after being migrated', function(done) {
+      // Setup fixture
+      var birthdayDate = moment();
+      var rowToMigrate = aRow().withPostType(HAPPY_BIRTHDAY)
+                               .withMessageParameters('Brett Ausmeier', birthdayDate.valueOf())
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        name: 'Brett Ausmeier',
+        date: birthdayDate.toDate()
+      };
+      var expectedDocument = aDocument().withType(HAPPY_BIRTHDAY)
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
