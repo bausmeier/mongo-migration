@@ -9,7 +9,7 @@
     "mocha": "~1.13.0",
     "sinon": "~1.7.3",
     "moment": "~2.3.1",
-    "chai-for-sinon": "~0.0.1"
+    "chai-for-sinon": "~0.1.0"
   },
   "scripts": {
     "test": "mocha"

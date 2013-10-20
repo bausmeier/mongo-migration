@@ -13,7 +13,13 @@ var NO_ERROR = null,
     LEAVE_UPDATED = 3,
     HAPPY_BIRTHDAY = 5,
     SPIRIT_LEVEL_UPDATED = 6,
-    PIPS_AWARDED = 11;
+    WEB_FORM_RESPONSE = 8,
+    ANNIVERSARY = 9,
+    UPCOMING_TRAINING = 10,
+    PIPS_AWARDED = 11,
+    GROUP_CREATED = 12,
+    GROUP_UPDATED = 13,
+    THOUGHT_UPDATED = 16;
 
 describe('FeedPostMigrator', function() {
   
@@ -247,6 +253,221 @@ describe('FeedPostMigrator', function() {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+  
+  describe('Web form response', function() {
+    it('should have the correct properties after being migrated', function(done) {
+      // Setup fixture
+      var numberOfResponses = 1,
+          responseLink = '<a href=\'#response_list\'>Test</a>';
+      var rowToMigrate = aRow().withPostType(WEB_FORM_RESPONSE)
+                               .withMessageParameters(numberOfResponses, responseLink)
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        responses: numberOfResponses,
+        link: responseLink
+      };
+      var expectedDocument = aDocument().withType(WEB_FORM_RESPONSE)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+  
+  describe('Anniversary', function() {
+    var name = 'Brett Ausmeier';
+    var anniversaryDate = moment();
+    var anniversaryYears = 1;
+    
+    it('should have the correct properties after being migrated', function(done) {
+      // Setup fixture
+      var male = 1;
+      var rowToMigrate = aRow().withPostType(ANNIVERSARY)
+                               .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears,
+                                                      male)
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        name: name,
+        date: anniversaryDate.toDate(),
+        years: anniversaryYears,
+        gender: male
+      };
+      var expectedDocument = aDocument().withType(ANNIVERSARY)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+    
+    it('should have the correct properties after being migrated with no gender', function(done) {
+      // Setup fixture
+      var rowToMigrate = aRow().withPostType(ANNIVERSARY)
+                               .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears)
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        name: name,
+        date: anniversaryDate.toDate(),
+        years: anniversaryYears,
+        gender: 0 // Unknown
+      };
+      var expectedDocument = aDocument().withType(ANNIVERSARY)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+  
+  describe('Upcopming training', function() {
+    it('should have the correct properties after being migrated', function(done) {
+      // Setup fixture
+      var name = 'Brett Ausmeier';
+      var trainingDate = moment();
+      var rowToMigrate = aRow().withPostType(UPCOMING_TRAINING)
+                               .withMessageParameters(name, trainingDate.valueOf())
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        name: name,
+        date: trainingDate.toDate()
+      };
+      var expectedDocument = aDocument().withType(UPCOMING_TRAINING)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exericse SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+  
+  describe('Group created', function() {
+    it('should have the correct properties after being migrated', function(done) {
+      // Setup fixture
+      var groupName = 'Group';
+      var groupDescription = 'A group';
+      var rowToMigrate = aRow().withPostType(GROUP_CREATED)
+                               .withMessageParameters(groupName, groupDescription)
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        name: groupName,
+        description: groupDescription
+      };
+      var expectedDocument = aDocument()
+                             .withParameters(expectedParameters)
+                             .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+    
+  describe('Group updated', function() {
+    it('should have the correct properties after being migrated', function(done) {
+      // Setup fixture
+      var groupLink = 'group?group_id=1';
+      var groupName = 'Group';
+      var groupDescription = 'A group';
+      var rowToMigrate = aRow().withPostType(GROUP_UPDATED)
+                               .withMessageParameters(groupLink, groupName, groupDescription)
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        name: groupName,
+        description: groupDescription
+      };
+      var expectedDocument = aDocument()
+                             .withType(GROUP_UPDATED)
+                             .withParameters(expectedParameters)
+                             .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+  
+  describe('Thought updated', function() {
+    it('should have the correct properties after being migrated', function(done) {
+      // Setup fixture
+      var dateUpdated = moment();
+      var rowToMigrate = aRow().withPostType(THOUGHT_UPDATED)
+                               .withMessageParameters(dateUpdated.valueOf())
+                               .build();
+      // Setup expectations
+      var expectedParameters = {
+        date: dateUpdated.toDate()
+      };
+      var expectedDocument = aDocument().withType(THOUGHT_UPDATED)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        done();
+      });
+    });
+  });
+  
+  describe('Unhandled type', function() {
+    it('should have an array of parameters after being migrated and log an error', function(done) {
+      // Setup fixture
+      var unknownType = 0;
+      var rowToMigrate = aRow().withPostType(unknownType)
+                               .withMessageParameters('Test', 'parameters')
+                               .build();
+      var error = sinon.stub(console, 'error');
+      // Setup expectations
+      var expectedParameters = [
+        'Test',
+        'parameters'
+      ];
+      var expectedDocument = aDocument().withType(unknownType)
+                                        .withParameters(expectedParameters)
+                                        .build();
+      // Exercise SUT
+      migrator.write(rowToMigrate, null, function() {
+        error.restore();
+        // Verify behaviour
+        expect(collection.insert).to.be.calledOnce();
+        expect(collection.insert).to.be.calledWithMatch(expectedDocument);
+        expect(error).to.be.calledOnce();
+        expect(error).to.be.calledWith('Feed post type not handled: 0');
         done();
       });
     });

@@ -45,11 +45,6 @@ var convertParameters = function(type, values) {
   var parameters = {};
   // Handle type specific fields
   switch (type) {
-    // User comment
-    case 1:
-      console.error('User comment shouldn\'t have a parameters ' + values);
-      parameters = values;
-      break;
     // Upcoming leave
     case 2:
     // Leave updated
@@ -60,12 +55,6 @@ var convertParameters = function(type, values) {
         parameters.end = new Date(parseInt(values[2], 10));
       }
       break;
-    // Learning and development
-    case 4:
-      // TODO: WTF is this?
-      console.warn('Learning and development post not handled');
-      parameters = values;
-      break;
     // Happy birthday
     case 5:
       parameters.name = values[0];
@@ -74,12 +63,6 @@ var convertParameters = function(type, values) {
     // Spirit level updated
     case 6:
       parameters.level = parseInt(values[0], 10);
-      break;
-    // Stage spirit level updated
-    case 7:
-      // TODO: WTF is this?
-      console.warn('Stage spirit level post not handled');
-      parameters = values;
       break;
     // Web form response received
     case 8:
@@ -113,16 +96,6 @@ var convertParameters = function(type, values) {
       var startIndex = values.length - 2;
       parameters.name = values[startIndex];
       parameters.description = values[startIndex + 1];
-      break;
-    // Blog post published
-    case 14:
-      console.error('Blog post published shouldn\'t have a parameters ' + values);
-      parameters = values;
-      break;
-    // Thought shared
-    case 15:
-      console.error('Thought shared published shouldn\'t have a parameters ' + values);
-      parameters = values;
       break;
     // Thought updated
     case 16:
