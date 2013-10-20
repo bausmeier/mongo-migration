@@ -21,6 +21,14 @@ var NO_ERROR = null,
     GROUP_UPDATED = 13,
     THOUGHT_UPDATED = 16;
 
+var IRRELEVANT_MESSAGE = 'Test message',
+    IRRELEVANT_POSTED_BY_ID = 363,
+    IRRELEVANT_POSTED_BY_NAME = 'Brett Ausmeier',
+    IRRELEVANT_POSTED_BY_USERNAME = 'brett.ausmeier',
+    IRRELEVANT_POSTED_FOR_ID = 181,
+    IRRELEVANT_POSTED_FOR_NAME = 'Clinton Bosch',
+    IRRELEVANT_POSTED_FOR_USERNAME = 'clinton.bosch';
+
 describe('FeedPostMigrator', function() {
   
   var migrator,
@@ -47,22 +55,39 @@ describe('FeedPostMigrator', function() {
   describe('User comment', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
-      var now = moment();
-      var rowToMigrate = aRow().withMessage('Test message')
-                               .withPostedForId(181)
-                               .withPostedForName('Clinton Bosch')
-                               .withPostedForUsername('clinton.bosch')
-                               .withDateCreated(now.valueOf())
+      var createdDate = moment();
+      var updatedDate = moment();
+      var postedForFeed = 180;
+      var rowToMigrate = aRow().withPostType(USER_COMMENT)
+                               .withMessage(IRRELEVANT_MESSAGE)
+                               .withPostedById(IRRELEVANT_POSTED_BY_ID)
+                               .withPostedByName(IRRELEVANT_POSTED_BY_NAME)
+                               .withPostedByUsername(IRRELEVANT_POSTED_BY_USERNAME)
+                               .withFeedId(postedForFeed)
+                               .withPostedForId(IRRELEVANT_POSTED_FOR_ID)
+                               .withPostedForName(IRRELEVANT_POSTED_FOR_NAME)
+                               .withPostedForUsername(IRRELEVANT_POSTED_FOR_USERNAME)
+                               .withDateCreated(createdDate.valueOf())
+                               .withDateUpdated(updatedDate.valueOf())
                                .build();
       // Setup expectations
-      var expectedPostedFor = {
-        id: 181,
-        name: 'Clinton Bosch',
-        username: 'clinton.bosch'
+      var expectedPostedBy = {
+        id: IRRELEVANT_POSTED_BY_ID,
+        name: IRRELEVANT_POSTED_BY_NAME,
+        username: IRRELEVANT_POSTED_BY_USERNAME
       };
-      var expectedDocument = aDocument().withMessage('Test message')
+      var expectedPostedFor = {
+        id: IRRELEVANT_POSTED_FOR_ID,
+        name: IRRELEVANT_POSTED_FOR_NAME,
+        username: IRRELEVANT_POSTED_FOR_USERNAME
+      };
+      var expectedDocument = aDocument().withType(USER_COMMENT)
+                                        .withMessage(IRRELEVANT_MESSAGE)
+                                        .withPostedBy(expectedPostedBy)
+                                        .withFeed(postedForFeed)
                                         .withPostedFor(expectedPostedFor)
-                                        .withCreated(now.toDate())
+                                        .withCreated(createdDate.toDate())
+                                        .withUpdated(updatedDate.toDate())
                                         .build(); 
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
@@ -75,15 +100,32 @@ describe('FeedPostMigrator', function() {
     
     it('should be added as reply when it has a parent post', function(done) {
       // Setup fixture
+      var postId = 2;
       var parentId = 1;
-      var rowToMigrate = aRow().withId(2).withReplyToFeedPostId(parentId).build(); 
+      var rowToMigrate = aRow().withPostType(USER_COMMENT)
+                               .withId(postId)
+                               .withMessage(IRRELEVANT_MESSAGE)
+                               .withReplyToFeedPostId(parentId)
+                               .withPostedById(IRRELEVANT_POSTED_BY_ID)
+                               .withPostedByName(IRRELEVANT_POSTED_BY_NAME)
+                               .withPostedByUsername(IRRELEVANT_POSTED_BY_USERNAME)
+                               .build(); 
       // Setup expectations
       var expectedQueryClause = {
         id: parentId,
       };
+      var expectedPostedBy = {
+        id: IRRELEVANT_POSTED_BY_ID,
+        name: IRRELEVANT_POSTED_BY_NAME,
+        username: IRRELEVANT_POSTED_BY_USERNAME
+      };
       var expectedSetClause = {
         $push: {
-          replies: aDocument().withId(2).build()
+          replies: aDocument().withType(USER_COMMENT)
+                              .withId(postId)
+                              .withMessage(IRRELEVANT_MESSAGE)
+                              .withPostedBy(expectedPostedBy)
+                              .build()
         }
       };
       // Exercise SUT
@@ -97,19 +139,32 @@ describe('FeedPostMigrator', function() {
   });
   
   describe('Pips awarded', function() {
+    var awardedBy = 'Brett Ausmeier',
+        awardedAmount = 100,
+        awardedCategory = 'Delivery Focus';
+    
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
-                               .withMessageParameters('Brett Ausmeier', 100, 'Delivery Focus')
+                               .withMessageParameters(awardedBy, awardedAmount, awardedCategory)
+                               .withPostedForId(IRRELEVANT_POSTED_FOR_ID)
+                               .withPostedForName(IRRELEVANT_POSTED_FOR_NAME)
+                               .withPostedForUsername(IRRELEVANT_POSTED_FOR_USERNAME)
                                .build();
       // Setup expectations
       var expectedParameters = {
-        awarded_by: 'Brett Ausmeier',
-        amount: 100,
-        category: 'Delivery Focus'
+        awardedBy: awardedBy,
+        amount: awardedAmount,
+        category: awardedCategory
+      };
+      var expectedPostedFor = {
+        id: IRRELEVANT_POSTED_FOR_ID,
+        name: IRRELEVANT_POSTED_FOR_NAME,
+        username: IRRELEVANT_POSTED_FOR_USERNAME
       };
       var expectedDocument = aDocument().withType(PIPS_AWARDED)
                                         .withParameters(expectedParameters)
+                                        .withPostedFor(expectedPostedFor)
                                         .build();
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
@@ -122,19 +177,29 @@ describe('FeedPostMigrator', function() {
     
     it('should have the correct properties after being migrated with a reason', function(done) {
       // Setup fixture
+      var awardedReason = 'For testing';
       var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
-                               .withMessageParameters('Brett Ausmeier', 100, 'Delivery Focus',
-                                                      'For testing')
+                               .withMessageParameters(awardedBy, awardedAmount, awardedCategory,
+                                                     awardedReason)
+                               .withPostedForId(IRRELEVANT_POSTED_FOR_ID)
+                               .withPostedForName(IRRELEVANT_POSTED_FOR_NAME)
+                               .withPostedForUsername(IRRELEVANT_POSTED_FOR_USERNAME)
                                .build();
       // Setup expectations
       var expectedParameters = {
-        awarded_by: 'Brett Ausmeier',
-        amount: 100,
-        category: 'Delivery Focus',
-        reason: 'For testing'
+        awardedBy: awardedBy,
+        amount: awardedAmount,
+        category: awardedCategory,
+        reason: awardedReason
+      };
+      var expectedPostedFor = {
+        id: IRRELEVANT_POSTED_FOR_ID,
+        name: IRRELEVANT_POSTED_FOR_NAME,
+        username: IRRELEVANT_POSTED_FOR_USERNAME
       };
       var expectedDocument = aDocument().withType(PIPS_AWARDED)
                                         .withParameters(expectedParameters)
+                                        .withPostedFor(expectedPostedFor)
                                         .build();
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
@@ -176,9 +241,10 @@ describe('FeedPostMigrator', function() {
   describe('Leave updated', function() {
     it('should be added to parent post with correct parameters', function(done) {
       // Setup fixture
+      var postId = 2;
       var parentId = 1;
       var today = moment();
-      var rowToMigrate = aRow().withId(2)
+      var rowToMigrate = aRow().withId(postId)
                                .withPostType(LEAVE_UPDATED)
                                .withMessageParameters('false', today.valueOf())
                                .withReplyToFeedPostId(parentId)
@@ -193,7 +259,7 @@ describe('FeedPostMigrator', function() {
       };
       var expectedSetClause = {
         $push: {
-          replies: aDocument().withId(2)
+          replies: aDocument().withId(postId)
                               .withType(LEAVE_UPDATED)
                               .withParameters(expectedParameters)
                               .build()
@@ -236,13 +302,14 @@ describe('FeedPostMigrator', function() {
   describe('Happy birthday', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
+      var name = 'Brett Ausmeier';
       var birthdayDate = moment();
       var rowToMigrate = aRow().withPostType(HAPPY_BIRTHDAY)
-                               .withMessageParameters('Brett Ausmeier', birthdayDate.valueOf())
+                               .withMessageParameters(name, birthdayDate.valueOf())
                                .build();
       // Setup expectations
       var expectedParameters = {
-        name: 'Brett Ausmeier',
+        name: name,
         date: birthdayDate.toDate()
       };
       var expectedDocument = aDocument().withType(HAPPY_BIRTHDAY)
@@ -340,7 +407,7 @@ describe('FeedPostMigrator', function() {
     });
   });
   
-  describe('Upcopming training', function() {
+  describe('Upcoming training', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var name = 'Brett Ausmeier';
@@ -380,6 +447,7 @@ describe('FeedPostMigrator', function() {
         description: groupDescription
       };
       var expectedDocument = aDocument()
+                             .withType(GROUP_CREATED)
                              .withParameters(expectedParameters)
                              .build();
       // Exercise SUT

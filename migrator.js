@@ -15,16 +15,16 @@ var convert = function(row) {
   doc.type = row.post_type;
   doc.feed = row.feed_id;
   // Embed the posted by employee
-  if (row.posted_by_name || row.posted_by_username) {
-    doc.posted_by = {
+  if (row.posted_by_name) {
+    doc.postedBy = {
       id: row.posted_by_id,
       name: row.posted_by_name,
       username: row.posted_by_username
     }
   }
   // Embed the posted for employee
-  if (row.posted_for_name || row.posted_for_username) {
-    doc.posted_for = {
+  if (row.posted_for_name) {
+    doc.postedFor = {
       id: row.posted_for_id,
       name: row.posted_for_name,
       username: row.posted_for_username
@@ -83,7 +83,7 @@ var convertParameters = function(type, values) {
       break;
     // Pips awarded
     case 11:
-      parameters.awarded_by = values[0];
+      parameters.awardedBy = values[0];
       parameters.amount = parseInt(values[1], 10);
       parameters.category = values[2];
       parameters.reason = values[3];

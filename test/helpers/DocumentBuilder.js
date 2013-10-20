@@ -1,3 +1,5 @@
+var now = require('./DateHelper').now;
+
 function DocumentBuilder() {
   if (!(this instanceof DocumentBuilder)) {
     return new DocumentBuilder();
@@ -5,10 +7,10 @@ function DocumentBuilder() {
   this.document = {
     id: 1,
     tenant: 1,
-    posted_by: {
-      name: 'Brett Ausmeier',
-      username: 'brett.ausmeier'
-    }
+    type: 0,
+    created: now.toDate(),
+    feed: 0,
+    message: null
   }
 };
 
@@ -32,13 +34,28 @@ DocumentBuilder.prototype.withParameters = function(parameters) {
   return this;
 };
 
-DocumentBuilder.prototype.withPostedFor = function(posted_for) {
-  this.document.posted_for = posted_for;
+DocumentBuilder.prototype.withPostedBy = function(postedBy) {
+  this.document.postedBy = postedBy;
+  return this;
+};
+
+DocumentBuilder.prototype.withPostedFor = function(postedFor) {
+  this.document.postedFor = postedFor;
   return this;
 };
 
 DocumentBuilder.prototype.withCreated = function(created) {
   this.document.created = created;
+  return this;
+};
+
+DocumentBuilder.prototype.withUpdated = function(updated) {
+  this.document.updated = updated;
+  return this;
+};
+
+DocumentBuilder.prototype.withFeed = function(feed) {
+  this.document.feed = feed;
   return this;
 };
 
