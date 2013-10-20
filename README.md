@@ -10,18 +10,18 @@ After the migration some indexes will need to be added. So far the indexes that 
 
 ```javascript
 db.feedposts.ensureIndex({'feed': 1});
-db.feedposts.ensureIndex({'posted_by.id': 1});
-db.feedposts.ensureIndex({'posted_for.id': 1});
-db.feedposts.ensureIndex({'replies.posted_by.id': 1});
+db.feedposts.ensureIndex({'postedBy.id': 1});
+db.feedposts.ensureIndex({'postedFor.id': 1});
+db.feedposts.ensureIndex({'replies.postedBy.id': 1});
 ```
 
 Test query to find feed posts posted by, posted for, or commented by me:
 
 ```javascript
 db.feedposts.find({$or: [
-  {'replies': {$elemMatch: {'posted_by.id': 363}}},
-  {'posted_for.id': 363},
-  {'posted_by.id': 363}
+  {'replies': {$elemMatch: {'postedBy.id': 363}}},
+  {'postedFor.id': 363},
+  {'postedBy.id': 363}
 ]}).explain();
 ```
 ### Migrator options
