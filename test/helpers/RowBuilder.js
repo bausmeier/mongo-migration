@@ -7,7 +7,7 @@ function RowBuilder() {
   this.row = {
     id: 1,
     tenant_id: 1,
-    date_created: now.valueOf(),
+    date_created: now.toString(),
     feed_id: 0,
     message: null
   }

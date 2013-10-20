@@ -8,9 +8,9 @@ var convert = function(row) {
   doc.id = row.id;
   doc.tenant = row.tenant_id;
   doc.message = row.message;
-  doc.created = new Date(parseInt(row.date_created, 10));
+  doc.created = new Date(row.date_created);
   if (row.date_updated) {
-    doc.updated = new Date(parseInt(row.date_updated, 10));
+    doc.updated = new Date(row.date_updated);
   }
   doc.type = row.post_type;
   doc.feed = row.feed_id;

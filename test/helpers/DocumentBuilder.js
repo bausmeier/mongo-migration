@@ -8,7 +8,7 @@ function DocumentBuilder() {
     id: 1,
     tenant: 1,
     type: 0,
-    created: now.toDate(),
+    created: now,
     feed: 0,
     message: null
   }

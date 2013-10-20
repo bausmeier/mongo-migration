@@ -5,7 +5,8 @@ var FeedPostMigrator = require('../migrator'),
     expect = chai.expect;
 
 var aDocument = require('./helpers/DocumentBuilder'),
-    aRow = require('./helpers/RowBuilder');
+    aRow = require('./helpers/RowBuilder'),
+    now = require('./helpers/DateHelper').now;
 
 var NO_ERROR = null,
     USER_COMMENT = 1,
@@ -55,8 +56,8 @@ describe('Post type', function() {
   describe('User comment', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
-      var createdDate = moment();
-      var updatedDate = moment();
+      var createdDate = now;
+      var updatedDate = now;
       var postedForFeed = 180;
       var rowToMigrate = aRow().withPostType(USER_COMMENT)
                                .withMessage(IRRELEVANT_MESSAGE)
@@ -67,8 +68,8 @@ describe('Post type', function() {
                                .withPostedForId(IRRELEVANT_POSTED_FOR_ID)
                                .withPostedForName(IRRELEVANT_POSTED_FOR_NAME)
                                .withPostedForUsername(IRRELEVANT_POSTED_FOR_USERNAME)
-                               .withDateCreated(createdDate.valueOf())
-                               .withDateUpdated(updatedDate.valueOf())
+                               .withDateCreated(createdDate.toString())
+                               .withDateUpdated(updatedDate.toString())
                                .build();
       // Setup expectations
       var expectedPostedBy = {
@@ -86,8 +87,8 @@ describe('Post type', function() {
                                         .withPostedBy(expectedPostedBy)
                                         .withFeed(postedForFeed)
                                         .withPostedFor(expectedPostedFor)
-                                        .withCreated(createdDate.toDate())
-                                        .withUpdated(updatedDate.toDate())
+                                        .withCreated(createdDate)
+                                        .withUpdated(updatedDate)
                                         .build(); 
       // Exercise SUT
       migrator.write(rowToMigrate, null, function() {
