@@ -1,5 +1,3 @@
-var moment = require('moment');
-
 var _now = new Date();
 _now.setMilliseconds(0);
 

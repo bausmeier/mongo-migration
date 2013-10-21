@@ -1,8 +1,7 @@
 var FeedPostMigrator = require('../migrator'),
     sinon = require('sinon'),
     moment = require('moment'),
-    chai = require('chai-for-sinon'),
-    expect = chai.expect;
+    expect = require('chai-for-sinon').expect;
 
 var aDocument = require('./helpers/DocumentBuilder'),
     aRow = require('./helpers/RowBuilder'),
@@ -18,8 +17,8 @@ var NO_ERROR = null,
     ANNIVERSARY = 9,
     UPCOMING_TRAINING = 10,
     PIPS_AWARDED = 11,
-    GROUP_CREATED = 12,
-    GROUP_UPDATED = 13,
+    ADDED_TO_GROUP = 12,
+    GROUP_CREATED = 13,
     THOUGHT_UPDATED = 16;
 
 var IRRELEVANT_MESSAGE = 'Test message',
@@ -434,12 +433,12 @@ describe('Post type', function() {
     });
   });
   
-  describe('Group created', function() {
+  describe('Added to group', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var groupName = 'Group';
       var groupDescription = 'A group';
-      var rowToMigrate = aRow().withPostType(GROUP_CREATED)
+      var rowToMigrate = aRow().withPostType(ADDED_TO_GROUP)
                                .withMessageParameters(groupName, groupDescription)
                                .build();
       // Setup expectations
@@ -448,7 +447,7 @@ describe('Post type', function() {
         description: groupDescription
       };
       var expectedDocument = aDocument()
-                             .withType(GROUP_CREATED)
+                             .withType(ADDED_TO_GROUP)
                              .withParameters(expectedParameters)
                              .build();
       // Exercise SUT
@@ -461,13 +460,13 @@ describe('Post type', function() {
     });
   });
     
-  describe('Group updated', function() {
+  describe('Group created', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var groupLink = 'group?group_id=1';
       var groupName = 'Group';
       var groupDescription = 'A group';
-      var rowToMigrate = aRow().withPostType(GROUP_UPDATED)
+      var rowToMigrate = aRow().withPostType(GROUP_CREATED)
                                .withMessageParameters(groupLink, groupName, groupDescription)
                                .build();
       // Setup expectations
@@ -476,7 +475,7 @@ describe('Post type', function() {
         description: groupDescription
       };
       var expectedDocument = aDocument()
-                             .withType(GROUP_UPDATED)
+                             .withType(GROUP_CREATED)
                              .withParameters(expectedParameters)
                              .build();
       // Exercise SUT
