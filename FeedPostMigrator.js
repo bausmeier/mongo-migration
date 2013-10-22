@@ -127,6 +127,7 @@ FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
     MongoClient.connect(this.db, function(err, database) {
       this.database = database;
       this.collection = this.database.collection(this.col);
+      // Create an index to speed up the updates
       this.collection.ensureIndex({'id': 1}, null, function(err) {
         if (err) {
           done(err);

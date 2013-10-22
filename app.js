@@ -9,6 +9,7 @@ var connection = mysql.createConnection({
   database: 'bsg'
 });
 
+// Options to pass to the migrators
 var migratorOptions = {
     database: 'mongodb://localhost/bsg'
 };
@@ -20,12 +21,13 @@ function migrateFeedPosts() {
   // Create a new migrator
   var migrator = new FeedPostMigrator(migratorOptions);
   
-  // Close the database connections when the finish event is fired
+  // Close the database connection and resolve the promise when the finish event is emitted
   migrator.on('finish', function() {
     migrator.database.close();
     deferred.resolve();
   });
   
+  // Reject the promise if an error event if emitted
   migrator.on('error', function(err) {
     deferred.reject(err);
   });
@@ -55,15 +57,18 @@ function migrateLikes() {
   
   var migrator = new LikesMigrator(migratorOptions);
   
+  // Close the database connection and resolve the promise when the finish event is emitted
   migrator.on('finish', function() {
     migrator.database.close();
     deferred.resolve();
   });
   
+  // Reject the promise if an error event if emitted
   migrator.on('error', function(err) {
     deferred.reject(err);
   });
   
+  // Get the id, parent id and employee details for each like
   var query = connection.query(
     'SELECT ' +
     ' feed_post_liked_by_employee.feed_post_id AS post_id, ' +
@@ -76,6 +81,7 @@ function migrateLikes() {
     ' ON feed_post.id = feed_post_liked_by_employee.feed_post_id '
   );
   
+  // Pipe the results of the query to the migrator
   query.stream().pipe(migrator);
   
   return deferred.promise;
@@ -83,6 +89,7 @@ function migrateLikes() {
 
 function cleanUp() {
   console.log('Cleaning up...');
+  // Close the connection to MySQL
   connection.end();
 }
 

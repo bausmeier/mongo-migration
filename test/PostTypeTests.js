@@ -21,13 +21,13 @@ var NO_ERROR = null,
     GROUP_CREATED = 13,
     THOUGHT_UPDATED = 16;
 
-var IRRELEVANT_MESSAGE = 'Test message',
-    IRRELEVANT_POSTED_BY_ID = 363,
-    IRRELEVANT_POSTED_BY_NAME = 'Brett Ausmeier',
-    IRRELEVANT_POSTED_BY_USERNAME = 'brett.ausmeier',
-    IRRELEVANT_POSTED_FOR_ID = 181,
-    IRRELEVANT_POSTED_FOR_NAME = 'Clinton Bosch',
-    IRRELEVANT_POSTED_FOR_USERNAME = 'clinton.bosch';
+var MESSAGE = 'Test message',
+    POSTED_BY_ID = 363,
+    POSTED_BY_NAME = 'Brett Ausmeier',
+    POSTED_BY_USERNAME = 'brett.ausmeier',
+    POSTED_FOR_ID = 181,
+    POSTED_FOR_NAME = 'Clinton Bosch',
+    POSTED_FOR_USERNAME = 'clinton.bosch';
 
 describe('Feed posts', function() {
   
@@ -62,30 +62,30 @@ describe('Feed posts', function() {
       var updatedDate = now;
       var postedForFeed = 180;
       var rowToMigrate = aRow().withPostType(USER_COMMENT)
-                               .withMessage(IRRELEVANT_MESSAGE)
-                               .withPostedById(IRRELEVANT_POSTED_BY_ID)
-                               .withPostedByName(IRRELEVANT_POSTED_BY_NAME)
-                               .withPostedByUsername(IRRELEVANT_POSTED_BY_USERNAME)
+                               .withMessage(MESSAGE)
+                               .withPostedById(POSTED_BY_ID)
+                               .withPostedByName(POSTED_BY_NAME)
+                               .withPostedByUsername(POSTED_BY_USERNAME)
                                .withFeedId(postedForFeed)
-                               .withPostedForId(IRRELEVANT_POSTED_FOR_ID)
-                               .withPostedForName(IRRELEVANT_POSTED_FOR_NAME)
-                               .withPostedForUsername(IRRELEVANT_POSTED_FOR_USERNAME)
+                               .withPostedForId(POSTED_FOR_ID)
+                               .withPostedForName(POSTED_FOR_NAME)
+                               .withPostedForUsername(POSTED_FOR_USERNAME)
                                .withDateCreated(createdDate.toString())
                                .withDateUpdated(updatedDate.toString())
                                .build();
       // Setup expectations
       var expectedPostedBy = {
-        id: IRRELEVANT_POSTED_BY_ID,
-        name: IRRELEVANT_POSTED_BY_NAME,
-        username: IRRELEVANT_POSTED_BY_USERNAME
+        id: POSTED_BY_ID,
+        name: POSTED_BY_NAME,
+        username: POSTED_BY_USERNAME
       };
       var expectedPostedFor = {
-        id: IRRELEVANT_POSTED_FOR_ID,
-        name: IRRELEVANT_POSTED_FOR_NAME,
-        username: IRRELEVANT_POSTED_FOR_USERNAME
+        id: POSTED_FOR_ID,
+        name: POSTED_FOR_NAME,
+        username: POSTED_FOR_USERNAME
       };
       var expectedDocument = aDocument().withType(USER_COMMENT)
-                                        .withMessage(IRRELEVANT_MESSAGE)
+                                        .withMessage(MESSAGE)
                                         .withPostedBy(expectedPostedBy)
                                         .withFeed(postedForFeed)
                                         .withPostedFor(expectedPostedFor)
@@ -107,26 +107,26 @@ describe('Feed posts', function() {
       var parentId = 1;
       var rowToMigrate = aRow().withPostType(USER_COMMENT)
                                .withId(postId)
-                               .withMessage(IRRELEVANT_MESSAGE)
+                               .withMessage(MESSAGE)
                                .withReplyToFeedPostId(parentId)
-                               .withPostedById(IRRELEVANT_POSTED_BY_ID)
-                               .withPostedByName(IRRELEVANT_POSTED_BY_NAME)
-                               .withPostedByUsername(IRRELEVANT_POSTED_BY_USERNAME)
+                               .withPostedById(POSTED_BY_ID)
+                               .withPostedByName(POSTED_BY_NAME)
+                               .withPostedByUsername(POSTED_BY_USERNAME)
                                .build(); 
       // Setup expectations
       var expectedQueryClause = {
         id: parentId,
       };
       var expectedPostedBy = {
-        id: IRRELEVANT_POSTED_BY_ID,
-        name: IRRELEVANT_POSTED_BY_NAME,
-        username: IRRELEVANT_POSTED_BY_USERNAME
+        id: POSTED_BY_ID,
+        name: POSTED_BY_NAME,
+        username: POSTED_BY_USERNAME
       };
       var expectedSetClause = {
         $push: {
           replies: aDocument().withType(USER_COMMENT)
                               .withId(postId)
-                              .withMessage(IRRELEVANT_MESSAGE)
+                              .withMessage(MESSAGE)
                               .withPostedBy(expectedPostedBy)
                               .build()
         }
@@ -150,9 +150,9 @@ describe('Feed posts', function() {
       // Setup fixture
       var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
                                .withMessageParameters(awardedBy, awardedAmount, awardedCategory)
-                               .withPostedForId(IRRELEVANT_POSTED_FOR_ID)
-                               .withPostedForName(IRRELEVANT_POSTED_FOR_NAME)
-                               .withPostedForUsername(IRRELEVANT_POSTED_FOR_USERNAME)
+                               .withPostedForId(POSTED_FOR_ID)
+                               .withPostedForName(POSTED_FOR_NAME)
+                               .withPostedForUsername(POSTED_FOR_USERNAME)
                                .build();
       // Setup expectations
       var expectedParameters = {
@@ -161,9 +161,9 @@ describe('Feed posts', function() {
         category: awardedCategory
       };
       var expectedPostedFor = {
-        id: IRRELEVANT_POSTED_FOR_ID,
-        name: IRRELEVANT_POSTED_FOR_NAME,
-        username: IRRELEVANT_POSTED_FOR_USERNAME
+        id: POSTED_FOR_ID,
+        name: POSTED_FOR_NAME,
+        username: POSTED_FOR_USERNAME
       };
       var expectedDocument = aDocument().withType(PIPS_AWARDED)
                                         .withParameters(expectedParameters)
@@ -184,9 +184,9 @@ describe('Feed posts', function() {
       var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
                                .withMessageParameters(awardedBy, awardedAmount, awardedCategory,
                                                      awardedReason)
-                               .withPostedForId(IRRELEVANT_POSTED_FOR_ID)
-                               .withPostedForName(IRRELEVANT_POSTED_FOR_NAME)
-                               .withPostedForUsername(IRRELEVANT_POSTED_FOR_USERNAME)
+                               .withPostedForId(POSTED_FOR_ID)
+                               .withPostedForName(POSTED_FOR_NAME)
+                               .withPostedForUsername(POSTED_FOR_USERNAME)
                                .build();
       // Setup expectations
       var expectedParameters = {
@@ -196,9 +196,9 @@ describe('Feed posts', function() {
         reason: awardedReason
       };
       var expectedPostedFor = {
-        id: IRRELEVANT_POSTED_FOR_ID,
-        name: IRRELEVANT_POSTED_FOR_NAME,
-        username: IRRELEVANT_POSTED_FOR_USERNAME
+        id: POSTED_FOR_ID,
+        name: POSTED_FOR_NAME,
+        username: POSTED_FOR_USERNAME
       };
       var expectedDocument = aDocument().withType(PIPS_AWARDED)
                                         .withParameters(expectedParameters)
