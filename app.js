@@ -20,7 +20,6 @@ function migrateFeedPosts() {
   // Close the database connections when the finish event is fired
   migrator.on('finish', function() {
     migrator.database.close();
-    connection.end();
     deferred.resolve();
   });
   
@@ -38,8 +37,7 @@ function migrateFeedPosts() {
     'LEFT OUTER JOIN employee AS posted_by ' +
     ' ON feed_post.posted_by_employee_id = posted_by.id ' +
     'LEFT OUTER JOIN employee AS posted_for ' +
-    ' ON feed_post.posted_for_employee_id = posted_for.id ' +
-    'LIMIT 1'
+    ' ON feed_post.posted_for_employee_id = posted_for.id '
   );
   
   // Pipe the results of the query to the migrator
@@ -58,4 +56,9 @@ function migrateLikes() {
   return deferred.promise;
 }
 
-migrateFeedPosts().then(migrateLikes).done();
+function cleanUp() {
+  console.log('Cleaning up...');
+  connection.end();
+}
+
+migrateFeedPosts().then(migrateLikes).finally(cleanUp).done();
