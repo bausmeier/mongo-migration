@@ -93,7 +93,7 @@ describe('Post type', function() {
                                         .withUpdated(updatedDate)
                                         .build(); 
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function(err) {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
