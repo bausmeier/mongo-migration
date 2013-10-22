@@ -29,7 +29,7 @@ var IRRELEVANT_MESSAGE = 'Test message',
     IRRELEVANT_POSTED_FOR_NAME = 'Clinton Bosch',
     IRRELEVANT_POSTED_FOR_USERNAME = 'clinton.bosch';
 
-describe('Post type', function() {
+describe('Feed posts', function() {
   
   var migrator,
       collection;
