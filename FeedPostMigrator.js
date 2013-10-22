@@ -125,9 +125,16 @@ FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
   // Connect to the database if we haven't already
   if (!this.database) {
     MongoClient.connect(this.db, function(err, database) {
-        this.database = database;
-        this.collection = this.database.collection(this.col);
+      this.database = database;
+      this.collection = this.database.collection(this.col);
+      this.collection.ensureIndex({'id': 1}, null, function(err) {
+        if (err) {
+          done(err);
+          return;
+        }
+        console.log('Index created on id');
         this._migrate(chunk, done);
+      }.bind(this));
     }.bind(this));
   } else {
     this._migrate(chunk, done);

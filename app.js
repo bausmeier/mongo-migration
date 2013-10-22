@@ -67,10 +67,13 @@ function migrateLikes() {
   var query = connection.query(
     'SELECT ' +
     ' feed_post_liked_by_employee.feed_post_id AS post_id, ' +
-    ' employee.id AS employee_id, employee.nme AS employee_name, employee.username AS employee_username ' +
+    ' employee.id AS employee_id, employee.nme AS employee_name, employee.username AS employee_username, ' +
+    ' feed_post.reply_to_feed_post_id AS parent_id ' +
     'FROM feed_post_liked_by_employee ' +
     'JOIN employee ' +
-    ' ON employee.id = feed_post_liked_by_employee.employee_id '
+    ' ON employee.id = feed_post_liked_by_employee.employee_id ' +
+    'JOIN feed_post ' +
+    ' ON feed_post.id = feed_post_liked_by_employee.feed_post_id '
   );
   
   query.stream().pipe(migrator);
