@@ -1,4 +1,4 @@
-var FeedPostMigrator = require('../migrator'),
+var FeedPostMigrator = require('../FeedPostMigrator'),
     sinon = require('sinon'),
     moment = require('moment'),
     expect = require('chai-for-sinon').expect;

@@ -1,5 +1,6 @@
 var mysql = require('mysql'),
-    FeedPostMigrator = require('./migrator'),
+    FeedPostMigrator = require('./FeedPostMigrator'),
+    LikesMigrator = require('./LikesMigrator'),
     Q = require('q');
 
 // Connect to MySQL
@@ -8,14 +9,16 @@ var connection = mysql.createConnection({
   database: 'bsg'
 });
 
+var migratorOptions = {
+    database: 'mongodb://localhost/bsg'
+};
+
 function migrateFeedPosts() {
   console.log('Migrating feed posts...');
   var deferred = Q.defer();
 
   // Create a new migrator
-  var migrator = new FeedPostMigrator({
-    database: 'mongodb://localhost/bsg'
-  });
+  var migrator = new FeedPostMigrator(migratorOptions);
   
   // Close the database connections when the finish event is fired
   migrator.on('finish', function() {
@@ -49,10 +52,29 @@ function migrateFeedPosts() {
 function migrateLikes() {
   console.log('Migrating likes...');
   var deferred = Q.defer();
-  // TODO: Migrate likes
-  setTimeout(function() {
+  
+  var migrator = new LikesMigrator(migratorOptions);
+  
+  migrator.on('finish', function() {
+    migrator.database.close();
     deferred.resolve();
-  }, 2000);
+  });
+  
+  migrator.on('error', function(err) {
+    deferred.reject(err);
+  });
+  
+  var query = connection.query(
+    'SELECT ' +
+    ' feed_post_liked_by_employee.feed_post_id AS post_id, ' +
+    ' employee.id AS employee_id, employee.nme AS employee_name, employee.username AS employee_username ' +
+    'FROM feed_post_liked_by_employee ' +
+    'JOIN employee ' +
+    ' ON employee.id = feed_post_liked_by_employee.employee_id '
+  );
+  
+  query.stream().pipe(migrator);
+  
   return deferred.promise;
 }
 
