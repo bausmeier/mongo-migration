@@ -26,7 +26,7 @@ LikesMigrator.prototype._write = function(chunk, encoding, done) {
       // Create an index to speed up the updates
       this.collection.ensureIndex({'replies.id': 1}, null, function(err) {
         if (err) {
-        	return done(err);
+          return done(err);
         }
         console.log('Index created on replies.id');
         this._migrate(chunk, done);
