@@ -1,7 +1,6 @@
 var Writable = require('stream').Writable,
     util = require('util'),
-    MongoClient = require('mongodb').MongoClient,
-    Q = require('q');
+    MongoClient = require('mongodb').MongoClient;
 
 util.inherits(LikesMigrator, Writable);
 
