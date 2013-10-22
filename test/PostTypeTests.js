@@ -41,6 +41,9 @@ describe('Post type', function() {
       insert: sinon.stub().yields(NO_ERROR),
       update: sinon.stub().yields(NO_ERROR)
     };
+    migrator.on('error', function() {
+      // Squash to prevent double test failure
+    });
   });
   
   after(function() {
@@ -90,11 +93,11 @@ describe('Post type', function() {
                                         .withUpdated(updatedDate)
                                         .build(); 
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, null, function(err) {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
     
@@ -129,11 +132,11 @@ describe('Post type', function() {
         }
       };
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function(err) {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.update).to.be.calledOnce();
         expect(collection.update).to.be.calledWithMatch(expectedQueryClause, expectedSetClause);
-        done();
+        done(err);
       });
     });
   });
@@ -167,11 +170,11 @@ describe('Post type', function() {
                                         .withPostedFor(expectedPostedFor)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
     
@@ -202,11 +205,11 @@ describe('Post type', function() {
                                         .withPostedFor(expectedPostedFor)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -229,11 +232,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -266,11 +269,11 @@ describe('Post type', function() {
         }
       };
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.update).to.be.calledOnce();
         expect(collection.update).to.be.calledWithMatch(expectedQueryClause, expectedSetClause);
-        done();
+        done(err);
       });
     });
   });
@@ -290,11 +293,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -316,11 +319,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify results
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -342,11 +345,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -374,11 +377,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
     
@@ -398,11 +401,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -424,11 +427,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exericse SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -451,11 +454,11 @@ describe('Post type', function() {
                              .withParameters(expectedParameters)
                              .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -479,11 +482,11 @@ describe('Post type', function() {
                              .withParameters(expectedParameters)
                              .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -503,11 +506,11 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
-        done();
+        done(err);
       });
     });
   });
@@ -529,14 +532,14 @@ describe('Post type', function() {
                                         .withParameters(expectedParameters)
                                         .build();
       // Exercise SUT
-      migrator.write(rowToMigrate, null, function() {
+      migrator.write(rowToMigrate, function(err) {
         error.restore();
         // Verify behaviour
         expect(collection.insert).to.be.calledOnce();
         expect(collection.insert).to.be.calledWithMatch(expectedDocument);
         expect(error).to.be.calledOnce();
         expect(error).to.be.calledWith('Feed post type not handled: 0');
-        done();
+        done(err);
       });
     });
   });
