@@ -125,13 +125,15 @@ FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
   // Connect to the database if we haven't already
   if (!this.database) {
     MongoClient.connect(this.db, function(err, database) {
+      if (err) {
+        return done(err);
+      }
       this.database = database;
       this.collection = this.database.collection(this.col);
       // Create an index to speed up the updates
       this.collection.ensureIndex({'id': 1}, null, function(err) {
         if (err) {
-          done(err);
-          return;
+          return done(err);
         }
         console.log('Index created on id');
         this._migrate(chunk, done);
@@ -143,8 +145,8 @@ FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
   return true;
 }
 
-FeedPostMigrator.prototype._migrate = function(chunk, done) {
-  var doc = convert(chunk);
+FeedPostMigrator.prototype._migrate = function(row, done) {
+  var doc = convert(row);
   // If the doc has a parent add it as a reply, otherwise insert it
   if (doc.parent) {
     this.collection.update({id: doc.parent}, {$push: {replies: doc}}, function(err) {

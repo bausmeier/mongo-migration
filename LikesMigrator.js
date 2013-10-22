@@ -18,13 +18,15 @@ LikesMigrator.prototype._write = function(chunk, encoding, done) {
   // Connect to the database if we haven't already
   if (!this.database) {
     MongoClient.connect(this.db, function(err, database) {
+      if (err) {
+        return done(err);
+      }
       this.database = database;
       this.collection = this.database.collection(this.col);
       // Create an index to speed up the updates
       this.collection.ensureIndex({'replies.id': 1}, null, function(err) {
         if (err) {
-        	done(err);
-          return;
+        	return done(err);
         }
         console.log('Index created on replies.id');
         this._migrate(chunk, done);
