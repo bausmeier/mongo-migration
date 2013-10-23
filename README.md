@@ -1,9 +1,10 @@
 ### Indexes
 
-There needs to be a temporary index for adding comments to a post during the migration:
+There need to be some temporary indexes for handling replies during the migration:
 
 ```javascript
 db.feedposts.ensureIndex({'id': 1});
+db.feedposts.ensureIndex({'replies.id': 1});
 ```
 
 After the migration some indexes will need to be added. So far the indexes that make sense to me are:
@@ -18,11 +19,13 @@ db.feedposts.ensureIndex({'replies.postedBy.id': 1});
 Test query to find feed posts posted by, posted for, or commented by me:
 
 ```javascript
-db.feedposts.find({$or: [
-  {'replies': {$elemMatch: {'postedBy.id': 363}}},
-  {'postedFor.id': 363},
-  {'postedBy.id': 363}
-]}).explain();
+db.feedposts.find({
+  $or: [
+    {'replies': {$elemMatch: {'postedBy.id': 363}}},
+    {'postedFor.id': 363},
+    {'postedBy.id': 363}
+  ]
+}).explain();
 ```
 ### Migrator options
 
