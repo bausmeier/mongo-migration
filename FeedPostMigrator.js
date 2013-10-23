@@ -1,6 +1,5 @@
-var Writable = require('stream').Writable,
-    util = require('util'),
-    MongoClient = require('mongodb').MongoClient;
+var Migrator = require('./Migrator'),
+    util = require('util');
 
 var convert = function(row) {
   var doc = {};
@@ -109,40 +108,13 @@ var convertParameters = function(type, values) {
   return parameters;
 };
 
-util.inherits(FeedPostMigrator, Writable);
+util.inherits(FeedPostMigrator, Migrator);
 
 function FeedPostMigrator(options) {
   if (!(this instanceof FeedPostMigrator)) {
     return new FeedPostMigrator(options);
   }
-  Writable.call(this, {objectMode: true});
-  options = options || {};
-  this.db = options.database || 'mongodb://localhost/test';
-  this.col = options.collection || 'feedposts';
-}
-
-FeedPostMigrator.prototype._write = function(chunk, encoding, done) {
-  // Connect to the database if we haven't already
-  if (!this.database) {
-    MongoClient.connect(this.db, function(err, database) {
-      if (err) {
-        return done(err);
-      }
-      this.database = database;
-      this.collection = this.database.collection(this.col);
-      // Create an index to speed up the updates
-      this.collection.ensureIndex({'id': 1}, null, function(err) {
-        if (err) {
-          return done(err);
-        }
-        console.log('Index created on id');
-        this._migrate(chunk, done);
-      }.bind(this));
-    }.bind(this));
-  } else {
-    this._migrate(chunk, done);
-  }
-  return true;
+  Migrator.call(this, options);
 }
 
 FeedPostMigrator.prototype._migrate = function(row, done) {
