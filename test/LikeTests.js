@@ -1,4 +1,4 @@
-var LikesMigrator = require('../LikesMigrator'),
+var LikesMigrator = require('../lib/LikesMigrator'),
     sinon = require('sinon'),
     expect = require('chai-for-sinon').expect;
 

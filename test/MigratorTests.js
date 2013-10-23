@@ -1,5 +1,5 @@
-var FeedPostMigrator = require('../FeedPostMigrator'),
-    LikesMigrator = require('../LikesMigrator'),
+var FeedPostMigrator = require('../lib/FeedPostMigrator'),
+    LikesMigrator = require('../lib/LikesMigrator'),
     expect = require('chai-for-sinon').expect,
     Writable = require('stream').Writable;
 
