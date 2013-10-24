@@ -1,4 +1,9 @@
-cover:
-	@istanbul cover node_modules/.bin/_mocha
+MOCHA = node_modules/.bin/_mocha
 
-.PHONY: cover
+cover:
+	@istanbul cover $(MOCHA)
+
+debug:
+	@node-theseus $(MOCHA)
+
+.PHONY: cover debug
