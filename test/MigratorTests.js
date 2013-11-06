@@ -19,6 +19,7 @@ describe('FeedPostMigrator', function() {
       expect(migrator).to.be.an.instanceOf(FeedPostMigrator);
       expect(migrator).to.be.an.instanceOf(Migrator);
       expect(migrator).to.be.an.instanceOf(Writable);
+      expect(migrator.writable).to.equal(true);
     });
     
     it('should return a new instance without the new keyword', function() {
@@ -26,6 +27,7 @@ describe('FeedPostMigrator', function() {
       expect(migrator).to.be.an.instanceOf(FeedPostMigrator);
       expect(migrator).to.be.an.instanceOf(Migrator);
       expect(migrator).to.be.an.instanceOf(Writable);
+      expect(migrator.writable).to.equal(true);
     });
 
     it('should have default options', function() {
@@ -55,6 +57,7 @@ describe('LikesMigrator', function() {
       expect(migrator).to.be.an.instanceOf(LikesMigrator);
       expect(migrator).to.be.an.instanceOf(Migrator);
       expect(migrator).to.be.an.instanceOf(Writable);
+      expect(migrator.writable).to.equal(true);
     });
     
     it('should return a new instance without the new keyword', function() {
@@ -62,6 +65,7 @@ describe('LikesMigrator', function() {
       expect(migrator).to.be.an.instanceOf(LikesMigrator);
       expect(migrator).to.be.an.instanceOf(Migrator);
       expect(migrator).to.be.an.instanceOf(Writable);
+      expect(migrator.writable).to.equal(true);
     });
 
     it('should have default options', function() {
@@ -91,6 +95,7 @@ describe('TagsMigrator', function() {
       expect(migrator).to.be.an.instanceOf(TagsMigrator);
       expect(migrator).to.be.an.instanceOf(Migrator);
       expect(migrator).to.be.an.instanceOf(Writable);
+      expect(migrator.writable).to.equal(true);
     });
     
     it('should return a new instance without the new keyword', function() {
@@ -98,6 +103,7 @@ describe('TagsMigrator', function() {
       expect(migrator).to.be.an.instanceOf(TagsMigrator);
       expect(migrator).to.be.an.instanceOf(Migrator);
       expect(migrator).to.be.an.instanceOf(Writable);
+      expect(migrator.writable).to.equal(true);
     });
     
     it('should have default options', function() {
