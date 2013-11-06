@@ -36,7 +36,7 @@ Test query to find feed posts posted by, posted for, or commented by me:
 ```javascript
 db.feedposts.find({
   $or: [
-    {'replies': {$elemMatch: {'postedBy.id': 363}}},
+    {'replies.postedBy.id': 363},
     {'postedFor.id': 363},
     {'postedBy.id': 363}
   ]
