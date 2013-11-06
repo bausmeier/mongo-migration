@@ -43,7 +43,7 @@ describe('Tags', function() {
             id: TAG_ID,
             name: TAG_NAME,
             taggedBy: {
-            	id: TAGGED_BY_ID,
+              id: TAGGED_BY_ID,
               name: TAGGED_BY_NAME
             }
           }
