@@ -1,3 +1,12 @@
+### Usage
+
+Install dependencies, run the tests, and run the migration:
+```bash
+$ npm install
+$ npm test
+$ npm start
+```
+
 ### Indexes
 
 There need to be some temporary indexes for handling replies during the migration:
