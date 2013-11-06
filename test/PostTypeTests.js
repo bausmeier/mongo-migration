@@ -3,7 +3,7 @@ var FeedPostMigrator = require('../lib/FeedPostMigrator'),
     moment = require('moment'),
     expect = require('chai-for-sinon').expect;
 
-var aDocument = require('./helpers/DocumentBuilder'),
+var aFeedPost = require('./helpers/FeedPostBuilder'),
     aRow = require('./helpers/RowBuilder'),
     aReply = require('./helpers/ReplyBuilder'),
     now = require('./helpers/DateHelper').now;
@@ -62,18 +62,19 @@ describe('Feed posts', function() {
       var createdDate = now;
       var updatedDate = now;
       var postedForFeed = 180;
-      var rowToMigrate = aRow().withPostType(USER_COMMENT)
-                               .withMessage(MESSAGE)
-                               .withPostedById(POSTED_BY_ID)
-                               .withPostedByName(POSTED_BY_NAME)
-                               .withPostedByUsername(POSTED_BY_USERNAME)
-                               .withFeedId(postedForFeed)
-                               .withPostedForId(POSTED_FOR_ID)
-                               .withPostedForName(POSTED_FOR_NAME)
-                               .withPostedForUsername(POSTED_FOR_USERNAME)
-                               .withDateCreated(createdDate.toString())
-                               .withDateUpdated(updatedDate.toString())
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(USER_COMMENT)
+                           .withMessage(MESSAGE)
+                           .withPostedById(POSTED_BY_ID)
+                           .withPostedByName(POSTED_BY_NAME)
+                           .withPostedByUsername(POSTED_BY_USERNAME)
+                           .withFeedId(postedForFeed)
+                           .withPostedForId(POSTED_FOR_ID)
+                           .withPostedForName(POSTED_FOR_NAME)
+                           .withPostedForUsername(POSTED_FOR_USERNAME)
+                           .withDateCreated(createdDate.toString())
+                           .withDateUpdated(updatedDate.toString())
+                           .build();
       // Setup expectations
       var expectedPostedBy = {
         id: POSTED_BY_ID,
@@ -85,14 +86,15 @@ describe('Feed posts', function() {
         name: POSTED_FOR_NAME,
         username: POSTED_FOR_USERNAME
       };
-      var expectedDocument = aDocument().withType(USER_COMMENT)
-                                        .withMessage(MESSAGE)
-                                        .withPostedBy(expectedPostedBy)
-                                        .withFeed(postedForFeed)
-                                        .withPostedFor(expectedPostedFor)
-                                        .withCreated(createdDate)
-                                        .withUpdated(updatedDate)
-                                        .build(); 
+      var expectedDocument = aFeedPost()
+                               .withType(USER_COMMENT)
+                               .withMessage(MESSAGE)
+                               .withPostedBy(expectedPostedBy)
+                               .withFeed(postedForFeed)
+                               .withPostedFor(expectedPostedFor)
+                               .withCreated(createdDate)
+                               .withUpdated(updatedDate)
+                               .build(); 
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify results
@@ -106,14 +108,15 @@ describe('Feed posts', function() {
       // Setup fixture
       var postId = 2;
       var parentId = 1;
-      var rowToMigrate = aRow().withPostType(USER_COMMENT)
-                               .withId(postId)
-                               .withMessage(MESSAGE)
-                               .withReplyToFeedPostId(parentId)
-                               .withPostedById(POSTED_BY_ID)
-                               .withPostedByName(POSTED_BY_NAME)
-                               .withPostedByUsername(POSTED_BY_USERNAME)
-                               .build(); 
+      var rowToMigrate = aRow()
+                           .withPostType(USER_COMMENT)
+                           .withId(postId)
+                           .withMessage(MESSAGE)
+                           .withReplyToFeedPostId(parentId)
+                           .withPostedById(POSTED_BY_ID)
+                           .withPostedByName(POSTED_BY_NAME)
+                           .withPostedByUsername(POSTED_BY_USERNAME)
+                           .build(); 
       // Setup expectations
       var expectedQueryClause = {
         id: parentId,
@@ -125,10 +128,11 @@ describe('Feed posts', function() {
       };
       var expectedSetClause = {
         $push: {
-          replies: aReply().withId(postId)
-                           .withMessage(MESSAGE)
-                           .withPostedBy(expectedPostedBy)
-                           .build()
+          replies: aReply()
+                     .withId(postId)
+                     .withMessage(MESSAGE)
+                     .withPostedBy(expectedPostedBy)
+                     .build()
         }
       };
       // Exercise SUT
@@ -148,12 +152,13 @@ describe('Feed posts', function() {
     
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
-      var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
-                               .withMessageParameters(awardedBy, awardedAmount, awardedCategory)
-                               .withPostedForId(POSTED_FOR_ID)
-                               .withPostedForName(POSTED_FOR_NAME)
-                               .withPostedForUsername(POSTED_FOR_USERNAME)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(PIPS_AWARDED)
+                           .withMessageParameters(awardedBy, awardedAmount, awardedCategory)
+                           .withPostedForId(POSTED_FOR_ID)
+                           .withPostedForName(POSTED_FOR_NAME)
+                           .withPostedForUsername(POSTED_FOR_USERNAME)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         awardedBy: awardedBy,
@@ -165,10 +170,11 @@ describe('Feed posts', function() {
         name: POSTED_FOR_NAME,
         username: POSTED_FOR_USERNAME
       };
-      var expectedDocument = aDocument().withType(PIPS_AWARDED)
-                                        .withParameters(expectedParameters)
-                                        .withPostedFor(expectedPostedFor)
-                                        .build();
+      var expectedDocument = aFeedPost()
+                               .withType(PIPS_AWARDED)
+                               .withParameters(expectedParameters)
+                               .withPostedFor(expectedPostedFor)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify results
@@ -181,13 +187,13 @@ describe('Feed posts', function() {
     it('should have the correct properties after being migrated with a reason', function(done) {
       // Setup fixture
       var awardedReason = 'For testing';
-      var rowToMigrate = aRow().withPostType(PIPS_AWARDED)
-                               .withMessageParameters(awardedBy, awardedAmount, awardedCategory,
-                                                     awardedReason)
-                               .withPostedForId(POSTED_FOR_ID)
-                               .withPostedForName(POSTED_FOR_NAME)
-                               .withPostedForUsername(POSTED_FOR_USERNAME)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(PIPS_AWARDED)
+                           .withMessageParameters(awardedBy, awardedAmount, awardedCategory, awardedReason)
+                           .withPostedForId(POSTED_FOR_ID)
+                           .withPostedForName(POSTED_FOR_NAME)
+                           .withPostedForUsername(POSTED_FOR_USERNAME)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         awardedBy: awardedBy,
@@ -200,10 +206,11 @@ describe('Feed posts', function() {
         name: POSTED_FOR_NAME,
         username: POSTED_FOR_USERNAME
       };
-      var expectedDocument = aDocument().withType(PIPS_AWARDED)
-                                        .withParameters(expectedParameters)
-                                        .withPostedFor(expectedPostedFor)
-                                        .build();
+      var expectedDocument = aFeedPost()
+                               .withType(PIPS_AWARDED)
+                               .withParameters(expectedParameters)
+                               .withPostedFor(expectedPostedFor)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify results
@@ -219,18 +226,17 @@ describe('Feed posts', function() {
       // Setup fixture
       var today = moment();
       var tomorrow = moment().add('days', 1);
-      var rowToMigrate = aRow().withPostType(UPCOMING_LEAVE)
-                               .withMessageParameters('true', today.valueOf(), tomorrow.valueOf())
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(UPCOMING_LEAVE)
+                           .withMessageParameters('true', today.valueOf(), tomorrow.valueOf())
+                           .build();
       // Setup expectations
       var expectedParameters = {
         halfday: true,
         start: today.toDate(),
         end: tomorrow.toDate()
       };
-      var expectedDocument = aDocument().withType(UPCOMING_LEAVE)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost().withType(UPCOMING_LEAVE).withParameters(expectedParameters).build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify results
@@ -247,11 +253,12 @@ describe('Feed posts', function() {
       var postId = 2;
       var parentId = 1;
       var today = moment();
-      var rowToMigrate = aRow().withId(postId)
-                               .withPostType(LEAVE_UPDATED)
-                               .withMessageParameters('false', today.valueOf())
-                               .withReplyToFeedPostId(parentId)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withId(postId)
+                           .withPostType(LEAVE_UPDATED)
+                           .withMessageParameters('false', today.valueOf())
+                           .withReplyToFeedPostId(parentId)
+                           .build();
       // Setup expectations
       var expectedQueryClause = {
         id: parentId
@@ -279,16 +286,18 @@ describe('Feed posts', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var irrelevantLevel = 1;
-      var rowToMigrate = aRow().withPostType(SPIRIT_LEVEL_UPDATED)
-                               .withMessageParameters(irrelevantLevel)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(SPIRIT_LEVEL_UPDATED)
+                           .withMessageParameters(irrelevantLevel)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         level: irrelevantLevel
       };
-      var expectedDocument = aDocument().withType(SPIRIT_LEVEL_UPDATED)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost()
+                               .withType(SPIRIT_LEVEL_UPDATED)
+                               .withParameters(expectedParameters)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify results
@@ -304,17 +313,19 @@ describe('Feed posts', function() {
       // Setup fixture
       var name = 'Brett Ausmeier';
       var birthdayDate = moment();
-      var rowToMigrate = aRow().withPostType(HAPPY_BIRTHDAY)
-                               .withMessageParameters(name, birthdayDate.valueOf())
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(HAPPY_BIRTHDAY)
+                           .withMessageParameters(name, birthdayDate.valueOf())
+                           .build();
       // Setup expectations
       var expectedParameters = {
         name: name,
         date: birthdayDate.toDate()
       };
-      var expectedDocument = aDocument().withType(HAPPY_BIRTHDAY)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost()
+                               .withType(HAPPY_BIRTHDAY)
+                               .withParameters(expectedParameters)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify results
@@ -330,17 +341,16 @@ describe('Feed posts', function() {
       // Setup fixture
       var numberOfResponses = 1,
           responseLink = '<a href=\'#response_list\'>Test</a>';
-      var rowToMigrate = aRow().withPostType(WEB_FORM_RESPONSE)
-                               .withMessageParameters(numberOfResponses, responseLink)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(WEB_FORM_RESPONSE)
+                           .withMessageParameters(numberOfResponses, responseLink)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         responses: numberOfResponses,
         link: responseLink
       };
-      var expectedDocument = aDocument().withType(WEB_FORM_RESPONSE)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost().withType(WEB_FORM_RESPONSE).withParameters(expectedParameters).build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
@@ -359,10 +369,10 @@ describe('Feed posts', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var male = 1;
-      var rowToMigrate = aRow().withPostType(ANNIVERSARY)
-                               .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears,
-                                                      male)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(ANNIVERSARY)
+                           .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears, male)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         name: name,
@@ -370,9 +380,7 @@ describe('Feed posts', function() {
         years: anniversaryYears,
         gender: male
       };
-      var expectedDocument = aDocument().withType(ANNIVERSARY)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost().withType(ANNIVERSARY).withParameters(expectedParameters).build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
@@ -384,9 +392,10 @@ describe('Feed posts', function() {
     
     it('should have the correct properties after being migrated with no gender', function(done) {
       // Setup fixture
-      var rowToMigrate = aRow().withPostType(ANNIVERSARY)
-                               .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(ANNIVERSARY)
+                           .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         name: name,
@@ -394,9 +403,7 @@ describe('Feed posts', function() {
         years: anniversaryYears,
         gender: 0 // Unknown
       };
-      var expectedDocument = aDocument().withType(ANNIVERSARY)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost().withType(ANNIVERSARY).withParameters(expectedParameters).build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
@@ -412,17 +419,16 @@ describe('Feed posts', function() {
       // Setup fixture
       var name = 'Brett Ausmeier';
       var trainingDate = moment();
-      var rowToMigrate = aRow().withPostType(UPCOMING_TRAINING)
-                               .withMessageParameters(name, trainingDate.valueOf())
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(UPCOMING_TRAINING)
+                           .withMessageParameters(name, trainingDate.valueOf())
+                           .build();
       // Setup expectations
       var expectedParameters = {
         name: name,
         date: trainingDate.toDate()
       };
-      var expectedDocument = aDocument().withType(UPCOMING_TRAINING)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost().withType(UPCOMING_TRAINING).withParameters(expectedParameters).build();
       // Exericse SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
@@ -438,18 +444,19 @@ describe('Feed posts', function() {
       // Setup fixture
       var groupName = 'Group';
       var groupDescription = 'A group';
-      var rowToMigrate = aRow().withPostType(ADDED_TO_GROUP)
-                               .withMessageParameters(groupName, groupDescription)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(ADDED_TO_GROUP)
+                           .withMessageParameters(groupName, groupDescription)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         name: groupName,
         description: groupDescription
       };
-      var expectedDocument = aDocument()
-                             .withType(ADDED_TO_GROUP)
-                             .withParameters(expectedParameters)
-                             .build();
+      var expectedDocument = aFeedPost()
+                               .withType(ADDED_TO_GROUP)
+                               .withParameters(expectedParameters)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
@@ -466,18 +473,19 @@ describe('Feed posts', function() {
       var groupLink = 'group?group_id=1';
       var groupName = 'Group';
       var groupDescription = 'A group';
-      var rowToMigrate = aRow().withPostType(GROUP_CREATED)
-                               .withMessageParameters(groupLink, groupName, groupDescription)
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(GROUP_CREATED)
+                           .withMessageParameters(groupLink, groupName, groupDescription)
+                           .build();
       // Setup expectations
       var expectedParameters = {
         name: groupName,
         description: groupDescription
       };
-      var expectedDocument = aDocument()
-                             .withType(GROUP_CREATED)
-                             .withParameters(expectedParameters)
-                             .build();
+      var expectedDocument = aFeedPost()
+                               .withType(GROUP_CREATED)
+                               .withParameters(expectedParameters)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
@@ -492,16 +500,18 @@ describe('Feed posts', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var dateUpdated = moment();
-      var rowToMigrate = aRow().withPostType(THOUGHT_UPDATED)
-                               .withMessageParameters(dateUpdated.valueOf())
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(THOUGHT_UPDATED)
+                           .withMessageParameters(dateUpdated.valueOf())
+                           .build();
       // Setup expectations
       var expectedParameters = {
         date: dateUpdated.toDate()
       };
-      var expectedDocument = aDocument().withType(THOUGHT_UPDATED)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost()
+                               .withType(THOUGHT_UPDATED)
+                               .withParameters(expectedParameters)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify behaviour
@@ -516,18 +526,20 @@ describe('Feed posts', function() {
     it('should have an array of parameters after being migrated and log an error', function(done) {
       // Setup fixture
       var unknownType = 0;
-      var rowToMigrate = aRow().withPostType(unknownType)
-                               .withMessageParameters('Test', 'parameters')
-                               .build();
+      var rowToMigrate = aRow()
+                           .withPostType(unknownType)
+                           .withMessageParameters('Test', 'parameters')
+                           .build();
       var error = sinon.stub(console, 'error');
       // Setup expectations
       var expectedParameters = [
         'Test',
         'parameters'
       ];
-      var expectedDocument = aDocument().withType(unknownType)
-                                        .withParameters(expectedParameters)
-                                        .build();
+      var expectedDocument = aFeedPost()
+                               .withType(unknownType)
+                               .withParameters(expectedParameters)
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         error.restore();
