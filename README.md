@@ -7,6 +7,12 @@ $ npm test
 $ npm start
 ```
 
+Generate coverage reports:
+```bash
+$ npm install -g istanbul
+$ make cover
+```
+
 ### Indexes
 
 There need to be some temporary indexes for handling replies during the migration:
