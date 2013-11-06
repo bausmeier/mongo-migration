@@ -5,6 +5,7 @@ var FeedPostMigrator = require('../lib/FeedPostMigrator'),
 
 var aDocument = require('./helpers/DocumentBuilder'),
     aRow = require('./helpers/RowBuilder'),
+    aReply = require('./helpers/ReplyBuilder'),
     now = require('./helpers/DateHelper').now;
 
 var NO_ERROR = null,
@@ -124,11 +125,10 @@ describe('Feed posts', function() {
       };
       var expectedSetClause = {
         $push: {
-          replies: aDocument().withType(USER_COMMENT)
-                              .withId(postId)
-                              .withMessage(MESSAGE)
-                              .withPostedBy(expectedPostedBy)
-                              .build()
+          replies: aReply().withId(postId)
+                           .withMessage(MESSAGE)
+                           .withPostedBy(expectedPostedBy)
+                           .build()
         }
       };
       // Exercise SUT
@@ -262,10 +262,7 @@ describe('Feed posts', function() {
       };
       var expectedSetClause = {
         $push: {
-          replies: aDocument().withId(postId)
-                              .withType(LEAVE_UPDATED)
-                              .withParameters(expectedParameters)
-                              .build()
+          replies: aReply().withId(postId).withParameters(expectedParameters).build()
         }
       };
       // Exercise SUT
