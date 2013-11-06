@@ -2,7 +2,8 @@
 
 var TagsMigrator = require('../lib/TagsMigrator'),
     sinon = require('sinon'),
-    expect = require('chai-for-sinon').expect;
+    expect = require('chai-for-sinon').expect,
+    now = require('./helpers/DateHelper').now;
 
 var NO_ERROR = null,
     POST_ID = 1,
@@ -32,7 +33,8 @@ describe('Tags', function() {
         tag_id: TAG_ID,
         tag_name: TAG_NAME,
         tagged_by_id: TAGGED_BY_ID,
-        tagged_by_name: TAGGED_BY_NAME
+        tagged_by_name: TAGGED_BY_NAME,
+        date_created: now.toString()
       };
       var expectedQueryClause = {
         id: POST_ID
@@ -45,7 +47,8 @@ describe('Tags', function() {
             taggedBy: {
               id: TAGGED_BY_ID,
               name: TAGGED_BY_NAME
-            }
+            },
+            created: now
           }
         }
       };
