@@ -9,18 +9,18 @@ var aFeedPost = require('./helpers/FeedPostBuilder'),
     now = require('./helpers/DateHelper').now;
 
 var NO_ERROR = null,
-    USER_COMMENT = 1,
-    UPCOMING_LEAVE = 2,
-    LEAVE_UPDATED = 3,
-    HAPPY_BIRTHDAY = 5,
-    SPIRIT_LEVEL_UPDATED = 6,
-    WEB_FORM_RESPONSE = 8,
-    ANNIVERSARY = 9,
-    UPCOMING_TRAINING = 10,
-    PIPS_AWARDED = 11,
-    ADDED_TO_GROUP = 12,
-    GROUP_CREATED = 13,
-    THOUGHT_UPDATED = 16;
+    USER_COMMENT = 'USER_COMMENT',
+    UPCOMING_LEAVE = 'UPCOMING_LEAVE',
+    LEAVE_UPDATED = 'LEAVE_UPDATED',
+    HAPPY_BIRTHDAY = 'HAPPY_BIRTHDAY',
+    SPIRIT_LEVEL_UPDATED = 'EMPLOYEE_SPIRIT_LEVEL_UPDATED',
+    WEB_FORM_RESPONSE = 'WEB_FORM_RESPONSE_RECEIVED',
+    ANNIVERSARY = 'ANNIVERSARY',
+    UPCOMING_TRAINING = 'UPCOMING_TRAINING',
+    PIPS_AWARDED = 'PIPS_AWARDED',
+    ADDED_TO_GROUP = 'ADDED_TO_GROUP',
+    GROUP_CREATED = 'GROUP_CREATED',
+    THOUGHT_UPDATED = 'THOUGHT_UPDATED';
 
 var MESSAGE = 'Test message',
     POSTED_BY_ID = 363,
@@ -31,10 +31,10 @@ var MESSAGE = 'Test message',
     POSTED_FOR_USERNAME = 'clinton.bosch';
 
 describe('Feed posts', function() {
-  
+
   var migrator,
       collection;
-  
+
   before(function() {
     migrator = new FeedPostMigrator();
     migrator.database = true;
@@ -46,16 +46,16 @@ describe('Feed posts', function() {
       // Squash to prevent double test failure
     });
   });
-  
+
   after(function() {
     migrator.end();
   });
-  
+
   afterEach(function() {
     collection.insert.reset();
     collection.update.reset();
   });
-  
+
   describe('User comment', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -94,7 +94,7 @@ describe('Feed posts', function() {
                                .withPostedFor(expectedPostedFor)
                                .withCreated(createdDate)
                                .withUpdated(updatedDate)
-                               .build(); 
+                               .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
         // Verify results
@@ -103,7 +103,7 @@ describe('Feed posts', function() {
         done(err);
       });
     });
-    
+
     it('should be added as reply when it has a parent post', function(done) {
       // Setup fixture
       var postId = 2;
@@ -116,7 +116,7 @@ describe('Feed posts', function() {
                            .withPostedById(POSTED_BY_ID)
                            .withPostedByName(POSTED_BY_NAME)
                            .withPostedByUsername(POSTED_BY_USERNAME)
-                           .build(); 
+                           .build();
       // Setup expectations
       var expectedQueryClause = {
         id: parentId,
@@ -144,12 +144,12 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Pips awarded', function() {
     var awardedBy = 'Brett Ausmeier',
         awardedAmount = 100,
         awardedCategory = 'Delivery Focus';
-    
+
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var rowToMigrate = aRow()
@@ -183,7 +183,7 @@ describe('Feed posts', function() {
         done(err);
       });
     });
-    
+
     it('should have the correct properties after being migrated with a reason', function(done) {
       // Setup fixture
       var awardedReason = 'For testing';
@@ -220,7 +220,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Upcoming leave', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -246,7 +246,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Leave updated', function() {
     it('should be added to parent post with correct parameters', function(done) {
       // Setup fixture
@@ -281,7 +281,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Spirit level updated', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -307,7 +307,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Happy birthday', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -335,7 +335,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Web form response', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -360,12 +360,12 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Anniversary', function() {
     var name = 'Brett Ausmeier';
     var anniversaryDate = moment();
     var anniversaryYears = 1;
-    
+
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
       var male = 1;
@@ -389,7 +389,7 @@ describe('Feed posts', function() {
         done(err);
       });
     });
-    
+
     it('should have the correct properties after being migrated with no gender', function(done) {
       // Setup fixture
       var rowToMigrate = aRow()
@@ -413,7 +413,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Upcoming training', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -438,7 +438,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Added to group', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -466,7 +466,7 @@ describe('Feed posts', function() {
       });
     });
   });
-    
+
   describe('Group created', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -495,7 +495,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Thought updated', function() {
     it('should have the correct properties after being migrated', function(done) {
       // Setup fixture
@@ -521,7 +521,7 @@ describe('Feed posts', function() {
       });
     });
   });
-  
+
   describe('Unhandled type', function() {
     it('should have an array of parameters after being migrated and log an error', function(done) {
       // Setup fixture
