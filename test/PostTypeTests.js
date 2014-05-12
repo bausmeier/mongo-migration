@@ -477,12 +477,14 @@ describe('Feed posts', function() {
       var groupDescription = 'A group';
       var rowToMigrate = aRow()
           .withPostType(GROUP_CREATED)
+          .withPostedForName(POSTED_FOR_NAME)
           .withMessageParameters(groupLink, groupName, groupDescription)
           .build();
       // Setup expectations
       var expectedParameters = {
         name: groupName,
-        description: groupDescription
+        description: groupDescription,
+        createdBy: POSTED_FOR_NAME
       };
       var expectedDocument = aFeedPost()
           .withType(GROUP_CREATED)
