@@ -59,6 +59,11 @@ DocumentBuilder.prototype.withFeed = function(feed) {
   return this;
 };
 
+DocumentBuilder.prototype.withMugshotURL = function(mugshotURL) {
+  this.document.mugshot = mugshotURL;
+  return this;
+};
+
 DocumentBuilder.prototype.build = function() {
   return this.document;
 };
