@@ -94,7 +94,6 @@ describe('Feed posts', function() {
           .withPostedFor(expectedPostedFor)
           .withCreated(createdDate)
           .withUpdated(updatedDate)
-          .withMugshotURL('document/download?type=employee_mugshot&id=' + POSTED_BY_ID)
           .build();
       // Exercise SUT
       migrator.write(rowToMigrate, function(err) {
@@ -231,7 +230,6 @@ describe('Feed posts', function() {
       var tomorrow = moment().add('days', 1);
       var rowToMigrate = aRow()
           .withPostType(UPCOMING_LEAVE)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters('true', today.valueOf(), tomorrow.valueOf())
           .build();
       // Setup expectations
@@ -260,7 +258,6 @@ describe('Feed posts', function() {
       var rowToMigrate = aRow()
           .withId(postId)
           .withPostType(LEAVE_UPDATED)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters('false', today.valueOf())
           .withReplyToFeedPostId(parentId)
           .build();
@@ -293,7 +290,6 @@ describe('Feed posts', function() {
       var irrelevantLevel = 1;
       var rowToMigrate = aRow()
           .withPostType(SPIRIT_LEVEL_UPDATED)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(irrelevantLevel)
           .build();
       // Setup expectations
@@ -321,7 +317,6 @@ describe('Feed posts', function() {
       var birthdayDate = moment();
       var rowToMigrate = aRow()
           .withPostType(HAPPY_BIRTHDAY)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(name, birthdayDate.valueOf())
           .build();
       // Setup expectations
@@ -350,7 +345,6 @@ describe('Feed posts', function() {
           responseLink = '<a href=\'#response_list\'>Test</a>';
       var rowToMigrate = aRow()
           .withPostType(WEB_FORM_RESPONSE)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(numberOfResponses, responseLink)
           .build();
       // Setup expectations
@@ -379,7 +373,6 @@ describe('Feed posts', function() {
       var male = 1;
       var rowToMigrate = aRow()
           .withPostType(ANNIVERSARY)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears, male)
           .build();
       // Setup expectations
@@ -403,7 +396,6 @@ describe('Feed posts', function() {
       // Setup fixture
       var rowToMigrate = aRow()
           .withPostType(ANNIVERSARY)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(name, anniversaryDate.valueOf(), anniversaryYears)
           .build();
       // Setup expectations
@@ -431,7 +423,6 @@ describe('Feed posts', function() {
       var trainingDate = moment();
       var rowToMigrate = aRow()
           .withPostType(UPCOMING_TRAINING)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(name, trainingDate.valueOf())
           .build();
       // Setup expectations
@@ -457,7 +448,6 @@ describe('Feed posts', function() {
       var groupDescription = 'A group';
       var rowToMigrate = aRow()
           .withPostType(ADDED_TO_GROUP)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(groupName, groupDescription)
           .build();
       // Setup expectations
@@ -487,7 +477,6 @@ describe('Feed posts', function() {
       var groupDescription = 'A group';
       var rowToMigrate = aRow()
           .withPostType(GROUP_CREATED)
-          .withPostedForId(POSTED_FOR_ID)
           .withPostedForName(POSTED_FOR_NAME)
           .withMessageParameters(groupLink, groupName, groupDescription)
           .build();
@@ -517,7 +506,6 @@ describe('Feed posts', function() {
       var dateUpdated = moment();
       var rowToMigrate = aRow()
           .withPostType(THOUGHT_UPDATED)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters(dateUpdated.valueOf())
           .build();
       // Setup expectations
@@ -544,7 +532,6 @@ describe('Feed posts', function() {
       var unknownType = 0;
       var rowToMigrate = aRow()
           .withPostType(unknownType)
-          .withPostedForId(POSTED_FOR_ID)
           .withMessageParameters('Test', 'parameters')
           .build();
       var error = sinon.stub(console, 'error');
